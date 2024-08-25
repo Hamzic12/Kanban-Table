@@ -4,18 +4,26 @@ from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.uix.button import Button
 
 class Grid(GridLayout): # create 4 grid layouts and one stack layout
     def __init__(self, **kwargs):
         super(Grid, self).__init__(**kwargs)
-        self.cols = 4 # stages
+        self.cols = 1 # stages
         self.rows = 10 # tasks
         self.add_widget(Label(text="New task"))
         self.add_widget(Widget())
-        self.task = TextInput(multiline=False) 
+        self.task = TextInput(multiline=False)
         self.add_widget(self.task)
+        self.add = Button(text="Press me")
+        self.add.bind(on_press=self.on_press)
+        self.add_widget(self.add)
 
 
+    def on_press(self, instance):
+        self.input = self.task.text
+        print(self.input)
+        self.task.text = ""
 
 class Kanban(App):
 
