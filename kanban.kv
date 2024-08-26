@@ -1,4 +1,23 @@
 <Grid>
-    Label:
-        text: "TEXT"
-        pos: (2,0)
+    task : task
+    label : label
+    GridLayout:
+        cols: 2
+        rows: 3
+        size : root.width, root.height
+        size_hint : 0.5, 0.5
+        
+        
+    
+        Label:
+            id : label
+            text: "New Task"
+        
+        TextInput:
+            id: task
+            multiline: False
+            
+        
+        Button:
+            text: "Press me"
+            on_press : root.pressed()

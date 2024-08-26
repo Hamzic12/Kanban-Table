@@ -1,29 +1,41 @@
 import kivy
 from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
-from kivy.uix.button import Button
+from kivy.properties import ObjectProperty
+from kivy.uix.label import Label
 
-class Grid(GridLayout): # create 4 grid layouts and one stack layout
-    def __init__(self, **kwargs):
-        super(Grid, self).__init__(**kwargs)
-        self.cols = 1 # stages
-        self.rows = 10 # tasks
-        self.add_widget(Label(text="New task"))
-        self.add_widget(Widget())
-        self.task = TextInput(multiline=False)
-        self.add_widget(self.task)
-        self.add = Button(text="Press me")
-        self.add.bind(on_press=self.on_press)
-        self.add_widget(self.add)
+class Grid(Widget): # create 4 grid layouts and one stack layout
+    task = ObjectProperty(None)
+    sign = ObjectProperty(None)
+    b = 0
+    """ 
+        def pressed(self):
+        position = self.task.pos
+        text = self.task.text
+        print(position)
+        print(text)
+        position[0] += 1
+        position[1] += 5
+        print(position)
+        self.remove_widget(self.sign)
+        self.add_widget(Label(text="Name: Jeff"))
+        exampl = Label(text="Name: Jefssssssssssss")
+
+        self.add_widget(exampl)
+        exampl_pos = exampl.pos
 
 
-    def on_press(self, instance):
-        self.input = self.task.text
-        print(self.input)
+        exampl_pos[0] += 200 + self.b
+        exampl_pos[1] += 200 + self.b
+        
+        self.b += 50
+        
         self.task.text = ""
+    """
+    
+    def remove(self):
+        #remove text from one label and change into another label
+        pass
 
 class Kanban(App):
 
