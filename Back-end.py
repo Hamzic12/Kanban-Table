@@ -3,21 +3,27 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty
 from kivy.uix.label import Label
+from kivy.properties import StringProperty
 
 class Grid(Widget): # create 4 grid layouts and one stack layout
     task = ObjectProperty(None)
     sign = ObjectProperty(None)
     b = 0
-    """ 
-        def pressed(self):
+    variable = StringProperty("HELLO Variable")
+    
+    def pressed(self):
         position = self.task.pos
         text = self.task.text
         print(position)
         print(text)
-        position[0] += 1
-        position[1] += 5
+        position[0] += 0
+        position[1] += 50
         print(position)
-        self.remove_widget(self.sign)
+
+        self.ids.grid_id.remove_widget(self.ids.label) # syntax for removing
+
+        self.ids.grid_id.add_widget(Widget()) # syntax for adding
+        
         self.add_widget(Label(text="Name: Jeff"))
         exampl = Label(text="Name: Jefssssssssssss")
 
@@ -31,8 +37,8 @@ class Grid(Widget): # create 4 grid layouts and one stack layout
         self.b += 50
         
         self.task.text = ""
-    """
-    
+        self.variable = "after click variable"
+
     def remove(self):
         #remove text from one label and change into another label
         pass

@@ -1,17 +1,16 @@
 <Grid>
     task : task
-    label : label
+    sign : label
     GridLayout:
+        id : grid_id
         cols: 2
         rows: 3
         size : root.width, root.height
         size_hint : 0.5, 0.5
         
-        
-    
         Label:
             id : label
-            text: "New Task"
+            text: root.variable
         
         TextInput:
             id: task
