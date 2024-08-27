@@ -13,7 +13,7 @@
             GridLayout:  # stages for the kanban table
                 id: stage_id
                 cols: 4
-                size_hint_y: 0.6  # Takes 60% of the vertical space
+                size_hint_y: 0.2  # Takes 20% of the vertical space
                 # Optionally adjust the height proportion based on parent size
 
                 Label:
@@ -24,6 +24,7 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+
                 Label:
                     text: "In Progress"
                     canvas.before:
@@ -33,6 +34,15 @@
                             pos: self.pos
                             size: self.size
 
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line: # Draw the left border
+                            points: [self.x, self.y, self.x, self.y + self.height]
+                            width: 2
+                        Line: # Draw the right border
+                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
+                            width: 2
+
                 Label:
                     text: "Testing"
                     canvas.before:
@@ -41,6 +51,15 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line: # Draw the right border
+                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
+                            width: 2
+                        Line: # Draw the left border
+                            points: [self.x, self.y, self.x, self.y + self.height]
+                            width: 2
+
                 Label:
                     text: "Done"
                     canvas.before:
@@ -49,6 +68,14 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line: # Draw the right border
+                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
+                            width: 2
+                        Line: # Draw the left border
+                            points: [self.x, self.y, self.x, self.y + self.height]
+                            width: 2 
 
             RelativeLayout:  # place for tasks
                 id: table_id
@@ -57,9 +84,9 @@
                     text: "TEXT"
 
             GridLayout:  # bar showing process
-                id: completionbar_id
-                cols: 4
-                size_hint_y: 0.3  # Takes 30% of the vertical space
+                id: processbar_id
+                cols: 45
+                size_hint_y: 0.17  # Takes 30% of the vertical space
 
                 Widget:
                     canvas:
@@ -68,6 +95,11 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line:
+                            rectangle: (self.x, self.y, self.width, self.height)
+                            width: 2 
 
                 Widget:
                     canvas:
@@ -76,6 +108,11 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line:
+                            rectangle: (self.x, self.y, self.width, self.height)
+                            width: 2 
 
                 Widget:
                     canvas:
@@ -84,6 +121,11 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line:
+                            rectangle: (self.x, self.y, self.width, self.height)
+                            width: 2 
 
                 Widget:
                     canvas:
@@ -92,6 +134,23 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line:
+                            rectangle: (self.x, self.y, self.width, self.height)
+                            width: 2 
+                Widget:
+                    canvas:
+                        Color:
+                            rgba: 0, root.q5, 0, 1  # Adjust color dynamically with root.q4
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                        Color:
+                            rgba: 0, 0, 0, 1  # Border color (black)
+                        Line:
+                            rectangle: (self.x, self.y, self.width, self.height)
+                            width: 2 
 
         StackLayout:  # user interface
             id: ui_id

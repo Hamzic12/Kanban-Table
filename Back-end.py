@@ -12,6 +12,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     q2 = NumericProperty(0)
     q3 = NumericProperty(0)
     q4 = NumericProperty(0)
+    q5 = NumericProperty(0)
 
     variable = StringProperty("HELLO Variable")
     
@@ -46,17 +47,19 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         """
 
     def press_me(self): # trying for showing complition bar, if len of stage is 3 q(n) += 1 after pressing move right 
-        if self.q1 and self.q2 and self.q3 and self.q4 == 1:
+        if self.q1 and self.q2 and self.q3 and self.q4 and self.q5 == 1:
            self.q1 -= 1
            self.q2 -= 1
            self.q3 -= 1
            self.q4 -= 1
+           self.q5 -= 1
         else:
            self.q1 += 1
            self.q2 += 1
            self.q3 += 1
            self.q4 += 1
-           
+           self.q5 += 1
+
     def move_right(self): # add value to y
         pass
 
