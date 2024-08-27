@@ -1,12 +1,87 @@
-<Grid>
+<app_layout>
     task : task
     sign : label
     GridLayout:
-        id : grid_id
-        cols: 2
+        id : maingrid_id
+        cols: 1
         rows: 3
         size : root.width, root.height
-        size_hint : 0.5, 0.5
+
+        GridLayout:
+            id: stage_id
+            cols : 4
+            Label: 
+                text: "To Do"
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, 0, 1  # Red
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            Label: 
+                text: "In Progress"
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, 0, 1  # Red
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            Label: 
+                text: "Testing"
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, 0, 1  # Red
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            Label: 
+                text: "Done"
+                canvas.before:
+                    Color:
+                        rgba: 1, 0, root.color_change, 1  # Red 
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+        RelativeLayout:
+            id: table_id
+
+        GridLayout:
+            id: completionbar_id
+            cols: 4
+
+            Widget:
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Black 
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            Widget:
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Black 
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            Widget:
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Black 
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            Widget:
+                canvas:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Black 
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
         
         Label:
             id : label
@@ -19,4 +94,4 @@
         
         Button:
             text: "Press me"
-            on_press : root.pressed()
+            on_press : root.press_me()
