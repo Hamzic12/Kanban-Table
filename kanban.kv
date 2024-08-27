@@ -1,11 +1,19 @@
 <app_layout>:
+
+    task: task
+    days: days
+
     orientation: 'horizontal'
 
-    GridLayout:  # the main grid 
+    # the main grid 
+
+    GridLayout:  
         cols: 2
         size: root.width, root.height 
 
-        GridLayout:  # grid of 3 parts, the whole table
+        # grid of 3 parts, the whole table
+
+        GridLayout:  
             id: table_grid_id
             cols: 1
             rows: 3
@@ -13,7 +21,7 @@
             GridLayout:  # stages for the kanban table
                 id: stage_id
                 cols: 4
-                size_hint_y: 0.2  # Takes 20% of the vertical space
+                size_hint_y: 0.11  # Takes 20% of the vertical space
                 # Optionally adjust the height proportion based on parent size
 
                 Label:
@@ -77,7 +85,9 @@
                             points: [self.x, self.y, self.x, self.y + self.height]
                             width: 2 
 
-            RelativeLayout:  # place for tasks
+            # place for tasks
+
+            RelativeLayout:  
                 id: table_id
 
                 Label:
@@ -86,12 +96,12 @@
             GridLayout:  # bar showing process
                 id: processbar_id
                 cols: 45
-                size_hint_y: 0.17  # Takes 30% of the vertical space
+                size_hint_y: 0.1  # Takes 30% of the vertical space
 
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.q1, 0, 1  # Adjust color dynamically with root.q1
+                            rgba: 0, root.f1, 0, 1  # Adjust color dynamically with root.f1
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -99,12 +109,12 @@
                             rgba: 0, 0, 0, 1  # Border color (black)
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
-                            width: 2 
+                            width: 1 
 
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.q2, 0, 1  # Adjust color dynamically with root.q2
+                            rgba: 0, root.f2, 0, 1  # Adjust color dynamically with root.f2
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -112,12 +122,12 @@
                             rgba: 0, 0, 0, 1  # Border color (black)
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
-                            width: 2 
+                            width: 1 
 
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.q3, 0, 1  # Adjust color dynamically with root.q3
+                            rgba: 0, root.f3, 0, 1  # Adjust color dynamically with root.f3
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -125,12 +135,12 @@
                             rgba: 0, 0, 0, 1  # Border color (black)
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
-                            width: 2 
+                            width: 1 
 
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.q4, 0, 1  # Adjust color dynamically with root.q4
+                            rgba: 0, root.f4, 0, 1  # Adjust color dynamically with root.f4
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -138,11 +148,11 @@
                             rgba: 0, 0, 0, 1  # Border color (black)
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
-                            width: 2 
+                            width: 1
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.q5, 0, 1  # Adjust color dynamically with root.q4
+                            rgba: 0, root.f5, 0, 1  # Adjust color dynamically with root.f4
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -150,13 +160,43 @@
                             rgba: 0, 0, 0, 1  # Border color (black)
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
-                            width: 2 
+                            width: 1 
 
-        StackLayout:  # user interface
+          # user interface
+
+        StackLayout:
             id: ui_id
-            size_hint_x: 0.2  # This makes the StackLayout take up 20% of the horizontal space
-            orientation: 'lr-tb'  # Left to right, top to bottom
+            size_hint_x: 0.3  # This is for the horizontal space
+            orientation: 'lr-bt'
+            spacing : "5 dp"
+
             Button:
-                text: "Press me"
-                height: 50
+                text: "Right"
                 on_press: root.press_me()
+                size_hint: 0.5, 0.1
+
+            Button:
+                text: "Left"
+                size_hint: 0.5, 0.1
+            
+            Button:
+                text: "Add"
+                size_hint: 0.5, 0.1
+            
+            Button:
+                text: "Remove"
+                size_hint: 0.5, 0.1
+
+            TextInput:
+                id : days
+                hint_text: "Enter the days it will take"
+                multiline: False
+                size_hint: 1, 0.05
+
+            TextInput:
+                id: task
+                hint_text: "Enter the task"
+                multiline: False
+                size_hint: 1, 0.1
+
+            

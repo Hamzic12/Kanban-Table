@@ -1,64 +1,39 @@
 import kivy
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty
 from kivy.uix.label import Label
-from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty
 from kivy.properties import NumericProperty
 
 class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
-    # completion bar made up of 4 quarters
-    q1 = NumericProperty(0)
-    q2 = NumericProperty(0)
-    q3 = NumericProperty(0)
-    q4 = NumericProperty(0)
-    q5 = NumericProperty(0)
+    # completion bar made up of 4 fuarters
+    days = ObjectProperty(None)
+    task = ObjectProperty(None)
 
-    variable = StringProperty("HELLO Variable")
+    f1 = NumericProperty(0)
+    f2 = NumericProperty(0)
+    f3 = NumericProperty(0)
+    f4 = NumericProperty(0)
+    f5 = NumericProperty(0)
     
-    """  
-    inspiration from experiments
-    def pressed(self):
-        position = self.task.pos
-        text = self.task.text
-        print(position)
-        print(text)
-        position[0] += 0
-        position[1] += 50
-        print(position)
 
-        self.ids.grid_id.remove_widget(self.ids.label) # syntax for removing
-
-        self.ids.grid_id.add_widget(Widget()) # syntax for adding
-        
-        self.add_widget(Label(text="Name: Jeff"))
-        exampl = Label(text="Name: Jefssssssssssss")
-
-        exampl_pos = exampl.pos #getting position
-
-
-        exampl_pos[0] += 200 + self.b # changing position
-        exampl_pos[1] += 200 + self.b
-        
-        self.b += 50
-        
-        self.task.text = "" # empty input field
-        self.variable = "after click variable" # changing label text
-        """
-
-    def press_me(self): # trying for showing complition bar, if len of stage is 3 q(n) += 1 after pressing move right 
-        if self.q1 and self.q2 and self.q3 and self.q4 and self.q5 == 1:
-           self.q1 -= 1
-           self.q2 -= 1
-           self.q3 -= 1
-           self.q4 -= 1
-           self.q5 -= 1
+    def press_me(self): # trying for showing complition bar, if len of stage is 2 f(n) += 1 after pressing move right 
+        print(self.days.text, self.task.text)
+        """days_int = int(self.days.text)
+         days_int += 5
+        print(days_int) """
+        if self.f1 and self.f2 and self.f3 and self.f4 and self.f5 == 1:
+           self.f1 -= 1
+           self.f2 -= 1
+           self.f3 -= 1
+           self.f4 -= 1
+           self.f5 -= 1
         else:
-           self.q1 += 1
-           self.q2 += 1
-           self.q3 += 1
-           self.q4 += 1
-           self.q5 += 1
+           self.f1 += 1
+           self.f2 += 1
+           self.f3 += 1
+           self.f4 += 1
+           self.f5 += 1
 
     def move_right(self): # add value to y
         pass
