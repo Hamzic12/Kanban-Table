@@ -7,20 +7,17 @@ from kivy.properties import StringProperty
 from kivy.properties import NumericProperty
 
 class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
-    task = ObjectProperty(None)
-    sign = ObjectProperty(None)
-    b = 0
-
     # completion bar made up of 4 quarters
     q1 = NumericProperty(0)
     q2 = NumericProperty(0)
     q3 = NumericProperty(0)
     q4 = NumericProperty(0)
-    list_qs = [q1, q2, q3, q4]
-    
+
     variable = StringProperty("HELLO Variable")
     
-    """  def pressed(self):
+    """  
+    inspiration from experiments
+    def pressed(self):
         position = self.task.pos
         text = self.task.text
         print(position)
@@ -48,11 +45,31 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.variable = "after click variable" # changing label text
         """
 
-    def press_me(self):
-       for q in self.list_qs:
-           q += 1
+    def press_me(self): # trying for showing complition bar, if len of stage is 3 q(n) += 1 after pressing move right 
+        if self.q1 and self.q2 and self.q3 and self.q4 == 1:
+           self.q1 -= 1
+           self.q2 -= 1
+           self.q3 -= 1
+           self.q4 -= 1
+        else:
+           self.q1 += 1
+           self.q2 += 1
+           self.q3 += 1
+           self.q4 += 1
+    def move_right(self): # add value to y
+        pass
 
+    def move_left(self): # subtract value from y
+        pass
+    
+    def add_task(self): # take input field text make widget with text and date
+        pass
 
+    def delete_task(self): # if chosen delete
+        pass
+
+    def clear_table(self): # clear
+        pass
 
 class Kanban(App):
 

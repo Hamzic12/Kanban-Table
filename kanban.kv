@@ -1,15 +1,15 @@
-<app_layout>
-    task : task
-    sign : label
+<app_layout>:
+    orientation: 'horizontal'
+
     GridLayout:
-        id : maingrid_id
+        id: maingrid_id
         cols: 1
         rows: 3
-        size : root.width, root.height
+        size: root.width * 0.8, root.height  # Adjusting size to leave space for the StackLayout on the right
 
         GridLayout:
             id: stage_id
-            cols : 4
+            cols: 4
             Label: 
                 text: "To Do"
                 canvas.before:
@@ -38,13 +38,15 @@
                 text: "Done"
                 canvas.before:
                     Color:
-                        rgba: 1, 0, root.color_change, 1  # Red 
+                        rgba: 1, 0, 0, 1  # Red 
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
         RelativeLayout:
             id: table_id
+            Label:
+                text: "TEXT"
 
         GridLayout:
             id: completionbar_id
@@ -53,7 +55,7 @@
             Widget:
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 1  # Black 
+                        rgba: 0, root.q1, 0, 1  # Adjust color dynamically with root.q1
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -61,7 +63,7 @@
             Widget:
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 1  # Black 
+                        rgba: 0, root.q2, 0, 1  # Adjust color dynamically with root.q2
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -69,7 +71,7 @@
             Widget:
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 1  # Black 
+                        rgba: 0, root.q3, 0, 1  # Adjust color dynamically with root.q3
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -77,21 +79,15 @@
             Widget:
                 canvas:
                     Color:
-                        rgba: 0, 0, 0, 1  # Black 
+                        rgba: 0, root.q4, 0, 1  # Adjust color dynamically with root.q4
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-        
-        Label:
-            id : label
-            text: root.variable
-        
-        TextInput:
-            id: task
-            multiline: False
-            
-        
+    StackLayout:
+        size_hint_x: 0.2  # This makes the StackLayout take up 20% of the horizontal space
+        orientation: 'lr-tb'  # Left to right, top to bottom
         Button:
             text: "Press me"
-            on_press : root.press_me()
+            height: 50
+            on_press: root.press_me()
