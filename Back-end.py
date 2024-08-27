@@ -56,6 +56,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
            self.q2 += 1
            self.q3 += 1
            self.q4 += 1
+           
     def move_right(self): # add value to y
         pass
 

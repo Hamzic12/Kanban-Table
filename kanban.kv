@@ -1,93 +1,103 @@
 <app_layout>:
     orientation: 'horizontal'
 
-    GridLayout:
-        id: maingrid_id
-        cols: 1
-        rows: 3
-        size: root.width * 0.8, root.height  # Adjusting size to leave space for the StackLayout on the right
+    GridLayout:  # the main grid 
+        cols: 2
+        size: root.width, root.height 
 
-        GridLayout:
-            id: stage_id
-            cols: 4
-            Label: 
-                text: "To Do"
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1  # Red
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-            Label: 
-                text: "In Progress"
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1  # Red
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-            Label: 
-                text: "Testing"
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1  # Red
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-            Label: 
-                text: "Done"
-                canvas.before:
-                    Color:
-                        rgba: 1, 0, 0, 1  # Red 
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+        GridLayout:  # grid of 3 parts, the whole table
+            id: table_grid_id
+            cols: 1
+            rows: 3
+            
+            GridLayout:  # stages for the kanban table
+                id: stage_id
+                cols: 4
+                size_hint_y: 0.6  # Takes 60% of the vertical space
+                # Optionally adjust the height proportion based on parent size
 
-        RelativeLayout:
-            id: table_id
-            Label:
-                text: "TEXT"
+                Label:
+                    text: "To Do"
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1  # Red
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                Label:
+                    text: "In Progress"
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1  # Red
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
-        GridLayout:
-            id: completionbar_id
-            cols: 4
+                Label:
+                    text: "Testing"
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1  # Red
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                Label:
+                    text: "Done"
+                    canvas.before:
+                        Color:
+                            rgba: 1, 0, 0, 1  # Red 
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
-            Widget:
-                canvas:
-                    Color:
-                        rgba: 0, root.q1, 0, 1  # Adjust color dynamically with root.q1
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+            RelativeLayout:  # place for tasks
+                id: table_id
 
-            Widget:
-                canvas:
-                    Color:
-                        rgba: 0, root.q2, 0, 1  # Adjust color dynamically with root.q2
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+                Label:
+                    text: "TEXT"
 
-            Widget:
-                canvas:
-                    Color:
-                        rgba: 0, root.q3, 0, 1  # Adjust color dynamically with root.q3
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+            GridLayout:  # bar showing process
+                id: completionbar_id
+                cols: 4
+                size_hint_y: 0.3  # Takes 30% of the vertical space
 
-            Widget:
-                canvas:
-                    Color:
-                        rgba: 0, root.q4, 0, 1  # Adjust color dynamically with root.q4
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+                Widget:
+                    canvas:
+                        Color:
+                            rgba: 0, root.q1, 0, 1  # Adjust color dynamically with root.q1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
-    StackLayout:
-        size_hint_x: 0.2  # This makes the StackLayout take up 20% of the horizontal space
-        orientation: 'lr-tb'  # Left to right, top to bottom
-        Button:
-            text: "Press me"
-            height: 50
-            on_press: root.press_me()
+                Widget:
+                    canvas:
+                        Color:
+                            rgba: 0, root.q2, 0, 1  # Adjust color dynamically with root.q2
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                Widget:
+                    canvas:
+                        Color:
+                            rgba: 0, root.q3, 0, 1  # Adjust color dynamically with root.q3
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                Widget:
+                    canvas:
+                        Color:
+                            rgba: 0, root.q4, 0, 1  # Adjust color dynamically with root.q4
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+        StackLayout:  # user interface
+            id: ui_id
+            size_hint_x: 0.2  # This makes the StackLayout take up 20% of the horizontal space
+            orientation: 'lr-tb'  # Left to right, top to bottom
+            Button:
+                text: "Press me"
+                height: 50
+                on_press: root.press_me()
