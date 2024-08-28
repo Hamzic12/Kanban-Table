@@ -85,15 +85,16 @@
                             points: [self.x, self.y, self.x, self.y + self.height]
                             width: 2 
 
+            
             # place for tasks
 
             RelativeLayout:  
                 id: table_id
 
-                Label:
-                    text: "TEXT"
+            
+            # bar showing process
 
-            GridLayout:  # bar showing process
+            GridLayout:  
                 id: processbar_id
                 cols: 45
                 size_hint_y: 0.1  # Takes 30% of the vertical space
@@ -169,23 +170,36 @@
             size_hint_x: 0.3  # This is for the horizontal space
             orientation: 'lr-bt'
             spacing : "5 dp"
+            
+            Button:
+                text: "Clear table"
+                size_hint: 0.5, 0.1
+                on_press: root.save_progress()
+
+            Button:
+                text: "Clear table"
+                size_hint: 0.5, 0.1
+                on_press: root.clear_table()
 
             Button:
                 text: "Right"
-                on_press: root.press_me()
                 size_hint: 0.5, 0.1
+                on_press: root.press_me()
 
             Button:
                 text: "Left"
                 size_hint: 0.5, 0.1
+                on_press: root.move_left()
             
             Button:
                 text: "Add"
                 size_hint: 0.5, 0.1
+                on_press: root.add_task()
             
             Button:
                 text: "Remove"
                 size_hint: 0.5, 0.1
+                on_press: root.delete_task()
 
             TextInput:
                 id : days

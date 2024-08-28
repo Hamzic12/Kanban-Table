@@ -9,6 +9,8 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     # completion bar made up of 4 fuarters
     days = ObjectProperty(None)
     task = ObjectProperty(None)
+    label_count = 0
+    disabled = False
 
     f1 = NumericProperty(0)
     f2 = NumericProperty(0)
@@ -35,19 +37,37 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
            self.f4 += 1
            self.f5 += 1
 
+    def add_task(self): # take input field text make widget with text and date
+        
+        table_layout = self.ids.table_id
+
+        my_text = "This is dynamic text"
+        x_pos = 100 
+        y_pos = 200 *  self.label_count
+
+        # Create a Label using these variables
+        my_label = Label(text=my_text, pos=(x_pos, y_pos))
+        
+        table_layout.add_widget(my_label)
+        self.label_count = sum(1 for child in table_layout.children if isinstance(child, Label))
+        
+        print(f"Number of Labels: {self.label_count}")
+        if self.label_count == 10:
+            self.disabled = True
+
+    def delete_task(self): # if chosen delete
+        pass
+
     def move_right(self): # add value to y
         pass
 
     def move_left(self): # subtract value from y
         pass
-    
-    def add_task(self): # take input field text make widget with text and date
-        pass
-
-    def delete_task(self): # if chosen delete
-        pass
 
     def clear_table(self): # clear
+        pass
+
+    def save_progress(self): # save
         pass
 
 class Kanban(App):
