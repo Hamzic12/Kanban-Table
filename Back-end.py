@@ -1,5 +1,6 @@
 import kivy
 from kivy.app import App
+from kivy.core.window import Window 
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.properties import ObjectProperty
@@ -9,8 +10,8 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     # completion bar made up of 4 fuarters
     days = ObjectProperty(None)
     task = ObjectProperty(None)
-    label_count = 0
-    disabled = False
+    task_count = 0
+    disabled_add = False
 
     f1 = NumericProperty(0)
     f2 = NumericProperty(0)
@@ -42,18 +43,18 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         table_layout = self.ids.table_id
 
         my_text = "This is dynamic text"
-        x_pos = 100 
-        y_pos = 200 *  self.label_count
+        x_pos = -370
+        y_pos = 450 - 100 *  self.task_count
 
         # Create a Label using these variables
         my_label = Label(text=my_text, pos=(x_pos, y_pos))
         
         table_layout.add_widget(my_label)
-        self.label_count = sum(1 for child in table_layout.children if isinstance(child, Label))
+        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
         
-        print(f"Number of Labels: {self.label_count}")
-        if self.label_count == 10:
-            self.disabled = True
+        print(f"Number of tasks: {self.task_count}")
+        if self.task_count == 10: # Max 10 tasks
+            self.disabled_add = True
 
     def delete_task(self): # if chosen delete
         pass
@@ -73,6 +74,9 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 class Kanban(App):
 
     def build(self):
+        Window.size = (1280, 1200) 
+
+        Window.resizable = False
         return app_layout()
     
 if __name__ == "__main__":
