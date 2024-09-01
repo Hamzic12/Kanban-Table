@@ -42,25 +42,44 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             table_layout.add_widget(my_label)
 
         self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label)) 
-        
-        print(f"Number of tasks: {self.task_count}")
         self.check_task_count()
         self.task.text = ""
         
 
-    def progress_bar(self): # progress bar, if len of stage is 2 f(n) += 1 after pressing move right 
-        print(self.days.text, self.task.text)
+    def progress_bar(self):  # Track progress based on position
+        finish_stage = 0.38  # position for when task is finished
         
         for child in self.table_layout.children:
             if isinstance(child, Label):
-                if child.pos_hint['x'] == 0.38: # Trying only, switch to case 
+                curr_pos = child.pos_hint.get('x')
+                if curr_pos >= finish_stage and not hasattr(child, 'is_finished'):
+                    child.is_finished = True
                     self.finished += 1
-                    if self.finished == 2: # it can add up indefinetly if spamming left right
-                        self.f1 += 1
-                else: # TODO improve it, when moved outside of said coordinates it deducts
+                elif curr_pos < finish_stage and hasattr(child, 'is_finished'):
+                    delattr(child, 'is_finished')
                     self.finished -= 1
-                    self.f1 = 0 
-        print(f"There are {self.finished} finished tasks")
+
+        # Update progress bar
+        if self.finished >= 2:
+            self.f1 = 1
+        else:
+            self.f1 = 0
+        if self.finished >= 4:
+            self.f2 = 1
+        else:
+            self.f2 = 0
+        if self.finished >= 6:
+            self.f3 = 1
+        else:
+            self.f3 = 0
+        if self.finished >= 8:
+            self.f4 = 1
+        else:
+            self.f4 = 0
+        if self.finished >= 10:
+            self.f5 = 1
+        else:
+            self.f5 = 0
 
 
     def delete_task(self): # if chosen delete
@@ -70,7 +89,6 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] < 0.38:
                 child.pos_hint['x'] += 0.25
-                print(child.pos_hint)
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
  
@@ -79,8 +97,8 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] > -0.37:
                 child.pos_hint['x'] -= 0.25
-                print(child.pos_hint)
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+        self.progress_bar()
 
     def clear_table(self): # clear
         self.table_layout.clear_widgets()
