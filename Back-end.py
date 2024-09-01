@@ -3,9 +3,8 @@ from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
-from kivy.properties import ObjectProperty
-from kivy.properties import NumericProperty
-from kivy.properties import BooleanProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
+from kivy.clock import Clock
 
 class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     # completion bar made up of 4 fuarters
@@ -14,7 +13,6 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     task_count = 0
     
     disabled_add = BooleanProperty(False)
-
 
 
     f1 = NumericProperty(0)
@@ -44,23 +42,25 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
            self.f5 += 1
 
     def add_task(self): # take input field text make widget with text and date
-        
-        table_layout = self.ids.table_id # the part where the labels will be
+        table_layout = self.ids.table_id # relative layout id
 
         task_str = str(self.task.text)
         x_pos = - 0.37 
         y_pos = 0.46 - 0.1 * self.task_count
 
-        my_label = Label(text=task_str, pos_hint={'x': x_pos, 'y': y_pos})
-        table_layout.add_widget(my_label)
+        if self.task.text != "":
+            my_label = Label(text=task_str, pos_hint={'x': x_pos, 'y': y_pos})
+            table_layout.add_widget(my_label)
 
         self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label)) 
         
         print(f"Number of tasks: {self.task_count}")
         self.check_task_count()
+        self.task.text = ""
         
 
     def check_task_count(self):
+        self.table_layout = self.ids.table_id # To avoid repeating it in every method
         if self.task_count >= 10:
             self.disabled_add = True
         else:
@@ -71,14 +71,18 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         pass
 
     def move_right(self): # add value to y
-        pass
+        for child in self.table_layout.children:
+            if isinstance(child, Label):
+                child.pos_hint['x'] = child.pos_hint['x'] + 0.25
+                print(child.pos_hint)
+                Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+ 
 
     def move_left(self): # subtract value from y
         pass
 
     def clear_table(self): # clear
-        table_layout = self.ids.table_id
-        table_layout.clear_widgets()
+        self.table_layout.clear_widgets()
         self.task_count = 0
         self.check_task_count()
 
@@ -89,8 +93,6 @@ class Kanban(App):
 
     def build(self):
         Window.size = (1024, 768) 
-
-        Window.resizable = False
         return app_layout()
     
 if __name__ == "__main__":
