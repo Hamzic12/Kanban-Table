@@ -11,37 +11,26 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     days = ObjectProperty(None)
     task = ObjectProperty(None)
     task_count = 0
-    
+    finished = 0
     disabled_add = BooleanProperty(False)
 
 
-    f1 = NumericProperty(0)
+    f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
 
-    
-
-    def press_me(self): # trying for showing complition bar, if len of stage is 2 f(n) += 1 after pressing move right 
-        print(self.days.text, self.task.text)
-        """days_int = int(self.days.text)
-         days_int += 5
-        print(days_int) """
-        if self.f1 and self.f2 and self.f3 and self.f4 and self.f5 == 1:
-           self.f1 -= 1
-           self.f2 -= 1
-           self.f3 -= 1
-           self.f4 -= 1
-           self.f5 -= 1
+    def check_task_count(self):
+        self.table_layout = self.ids.table_id # To avoid repeating it in every method
+        if self.task_count >= 10:
+            self.disabled_add = True
         else:
-           self.f1 += 1
-           self.f2 += 1
-           self.f3 += 1
-           self.f4 += 1
-           self.f5 += 1
-
+            self.disabled_add = False
+    
+    
     def add_task(self): # take input field text make widget with text and date
+        
         table_layout = self.ids.table_id # relative layout id
 
         task_str = str(self.task.text)
@@ -59,12 +48,19 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task.text = ""
         
 
-    def check_task_count(self):
-        self.table_layout = self.ids.table_id # To avoid repeating it in every method
-        if self.task_count >= 10:
-            self.disabled_add = True
-        else:
-            self.disabled_add = False
+    def progress_bar(self): # progress bar, if len of stage is 2 f(n) += 1 after pressing move right 
+        print(self.days.text, self.task.text)
+        
+        for child in self.table_layout.children:
+            if isinstance(child, Label):
+                if child.pos_hint['x'] == 0.38: # Trying only, switch to case 
+                    self.finished += 1
+                    if self.finished == 2: # it can add up indefinetly if spamming left right
+                        self.f1 += 1
+                else: # TODO improve it, when moved outside of said coordinates it deducts
+                    self.finished -= 1
+                    self.f1 = 0 
+        print(f"There are {self.finished} finished tasks")
 
 
     def delete_task(self): # if chosen delete
@@ -76,6 +72,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 child.pos_hint['x'] += 0.25
                 print(child.pos_hint)
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+        self.progress_bar()
  
 
     def move_left(self): # subtract value from y
@@ -90,7 +87,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task_count = 0
         self.check_task_count()
 
-    def save_progress(self): # save
+    def save_progress(self): # save to database
         pass
 
 class Kanban(App):
