@@ -72,14 +72,18 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def move_right(self): # add value to y
         for child in self.table_layout.children:
-            if isinstance(child, Label):
-                child.pos_hint['x'] = child.pos_hint['x'] + 0.25
+            if isinstance(child, Label) and child.pos_hint['x'] < 0.38:
+                child.pos_hint['x'] += 0.25
                 print(child.pos_hint)
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
  
 
     def move_left(self): # subtract value from y
-        pass
+        for child in self.table_layout.children:
+            if isinstance(child, Label) and child.pos_hint['x'] > -0.37:
+                child.pos_hint['x'] -= 0.25
+                print(child.pos_hint)
+                Clock.schedule_once(lambda dt: self.table_layout.do_layout())
 
     def clear_table(self): # clear
         self.table_layout.clear_widgets()
