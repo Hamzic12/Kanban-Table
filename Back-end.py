@@ -14,7 +14,6 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     finished = 0
     disabled_add = BooleanProperty(False)
 
-
     f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
     f3 = NumericProperty(0)
@@ -38,8 +37,8 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         y_pos = 0.46 - 0.1 * self.task_count
 
         if self.task.text != "":
-            my_label = Label(text=task_str, pos_hint={'x': x_pos, 'y': y_pos})
-            table_layout.add_widget(my_label)
+            task_label = Label(text=task_str, pos_hint={'x': x_pos, 'y': y_pos})
+            table_layout.add_widget(task_label)
 
         self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label)) 
         self.check_task_count()
@@ -60,45 +59,32 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     self.finished -= 1
 
         # Update progress bar
-        if self.finished >= 2:
-            self.f1 = 1
-        else:
-            self.f1 = 0
-        if self.finished >= 4:
-            self.f2 = 1
-        else:
-            self.f2 = 0
-        if self.finished >= 6:
-            self.f3 = 1
-        else:
-            self.f3 = 0
-        if self.finished >= 8:
-            self.f4 = 1
-        else:
-            self.f4 = 0
-        if self.finished >= 10:
-            self.f5 = 1
-        else:
-            self.f5 = 0
+        self.f1 = 1 if self.finished >= 2 else 0
+        self.f2 = 1 if self.finished >= 4 else 0
+        self.f3 = 1 if self.finished >= 6 else 0
+        self.f4 = 1 if self.finished >= 8 else 0
+        self.f5 = 1 if self.finished >= 10 else 0
 
 
     def delete_task(self): # if chosen delete
         pass
 
-    def move_right(self): # add value to y
+    def move_right(self): # add value to x
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] < 0.38:
                 child.pos_hint['x'] += 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
+        # TODO to choose which labels gets moved
  
 
-    def move_left(self): # subtract value from y
+    def move_left(self): # subtract value from x
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] > -0.37:
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
+        # TODO to choose which labels gets moved
 
     def clear_table(self): # clear
         self.table_layout.clear_widgets()
