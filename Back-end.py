@@ -37,25 +37,24 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         y_pos = 0.9 - 0.1 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "":
-            task_label = Label(text=task_str,
+            task_label = Label(text=task_str, font_size = "20sp", color=(0,0,0,1),
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(200, 50))
             
-            # Create the label_bgangle behind the label dilabel_bgly linked to this task
+            # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
-                Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
-                highlight_task = Rectangle(pos=task_label.pos, size=(task_label.size[0] + 10, task_label.size[1] + 10))
+                Color(1, 1, 1, 0.8, mode='rgba') # rectangle for highlight
+                highlight_task = Rectangle(pos=(task_label.pos[0] - 4, task_label.pos[1] - 4), size=(task_label.size[0] + 8, task_label.size[1] + 8))
 
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
                 label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
 
-                task_label.bind(pos=lambda instance, value: setattr(highlight_task, 'pos', task_label.pos))
-                task_label.bind(size=lambda instance, value: setattr(highlight_task, 'size', (task_label.size[0] + 10, task_label.size[1] + 10)))
+                task_label.bind(pos=lambda instance, value: setattr(highlight_task, 'pos', (task_label.pos[0] - 4, task_label.pos[1] - 4)))
+                task_label.bind(size=lambda instance, value: setattr(highlight_task, 'size', (task_label.size[0] + 8, task_label.size[1] + 8)))
 
                 # Bind the label_bg position and size to the task_label
                 task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
                 task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
-
 
             table_layout.add_widget(task_label)
 
@@ -103,7 +102,6 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if isinstance(child, Label) and child.pos_hint['x'] > 0.0050000000000000044:
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
-                print(child.pos_hint['x'])
         self.progress_bar()
         # TODO to choose which labels gets moved
 
