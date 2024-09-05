@@ -4,7 +4,7 @@
     days: days
 
     orientation: 'horizontal'
-
+    
     # the main grid 
 
     GridLayout:  
@@ -90,8 +90,23 @@
 
             RelativeLayout:  
                 id: table_id
+                Widget:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # Border color (black)
+                        Line:
+                            points: [self.x, self.y, self.x + self.width, self.y]
+                            width: 3
 
-            
+                Widget:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # Border color (black)
+                        Line:
+                            points: [self.x, self.y + self.height, self.x + self.width, self.y + self.height]
+                            width: 2
+
+
             # bar showing progress
 
             GridLayout:  
