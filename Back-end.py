@@ -39,11 +39,11 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         if self.task.text != "":
             task_label = Label(text=task_str, font_size = "20sp", color=(0,0,0,1),
                             pos_hint={'x': x_pos, 'y': y_pos},
-                            size_hint=(None, None), size=(200, 50))
+                            size_hint=(None, None), size=(185, 50))
             
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
-                Color(1, 1, 1, 0.8, mode='rgba') # rectangle for highlight
+                Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
                 highlight_task = Rectangle(pos=(task_label.pos[0] - 4, task_label.pos[1] - 4), size=(task_label.size[0] + 8, task_label.size[1] + 8))
 
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
