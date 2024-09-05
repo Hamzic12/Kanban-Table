@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
+from kivy.graphics import Color, Rectangle
 
 class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     # completion bar made up of 4 fuarters
@@ -28,21 +29,32 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             self.disabled_add = False
     
     
-    def add_task(self): # take input field text make widget with text and date
-        
-        table_layout = self.ids.table_id # relative layout id
+    def add_task(self):  # take input field text, make widget with text and date
+        table_layout = self.ids.table_id  # relative layout id
 
         task_str = str(self.task.text)
-        x_pos = - 0.37 
-        y_pos = 0.46 - 0.1 * self.task_count
+        x_pos = 0.005  # Horizontal position for the task
+        y_pos = 0.9 - 0.1 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "":
-            task_label = Label(text=task_str, pos_hint={'x': x_pos, 'y': y_pos})
+            task_label = Label(text=task_str,
+                            pos_hint={'x': x_pos, 'y': y_pos},
+                            size_hint=(None, None), size=(200, 50))
+            
+            # Create the label_bgangle behind the label dilabel_bgly linked to this task
+            with task_label.canvas.before:
+                Color(1, 0, 0, 0.5, mode='rgba')  # Semi-transparent red background
+                label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
+
+                # Bind the label_bg position and size to the task_label
+                task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
+                task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
+
             table_layout.add_widget(task_label)
 
-        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label)) 
+        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
         self.check_task_count()
-        self.task.text = ""
+        self.task.text = "" # Clear the input text for the next task
         
 
     def progress_bar(self):  # Track progress based on position
@@ -71,25 +83,30 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def move_right(self): # add value to x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] < 0.38:
+            if isinstance(child, Label) and child.pos_hint['x'] < 0.755:
                 child.pos_hint['x'] += 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
+        
         # TODO to choose which labels gets moved
  
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] > -0.37:
+            if isinstance(child, Label) and child.pos_hint['x'] > 0.0050000000000000044:
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+                print(child.pos_hint['x'])
         self.progress_bar()
         # TODO to choose which labels gets moved
 
     def clear_table(self): # clear
         self.table_layout.clear_widgets()
         self.task_count = 0
+        self.finished = 0
+        Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.check_task_count()
+        self.progress_bar()
 
     def save_progress(self): # save to database
         pass
