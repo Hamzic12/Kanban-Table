@@ -43,12 +43,19 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             
             # Create the label_bgangle behind the label dilabel_bgly linked to this task
             with task_label.canvas.before:
-                Color(1, 0, 0, 0.5, mode='rgba')  # Semi-transparent red background
+                Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
+                highlight_task = Rectangle(pos=task_label.pos, size=(task_label.size[0] + 10, task_label.size[1] + 10))
+
+                Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
                 label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
+
+                task_label.bind(pos=lambda instance, value: setattr(highlight_task, 'pos', task_label.pos))
+                task_label.bind(size=lambda instance, value: setattr(highlight_task, 'size', (task_label.size[0] + 10, task_label.size[1] + 10)))
 
                 # Bind the label_bg position and size to the task_label
                 task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
                 task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
+
 
             table_layout.add_widget(task_label)
 
