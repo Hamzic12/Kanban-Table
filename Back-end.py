@@ -64,7 +64,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         
 
     def progress_bar(self):  # Track progress based on position
-        finish_stage = 0.38  # position for when task is finished
+        finish_stage = 0.755  # position for when task is finished
         
         for child in self.table_layout.children:
             if isinstance(child, Label):
