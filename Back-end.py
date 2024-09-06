@@ -106,10 +106,15 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         # TODO to choose which labels gets moved
 
     def clear_table(self): # clear
-        self.table_layout.clear_widgets()
+        for child in list(self.table_layout.children):
+            if isinstance(child, Label):
+                self.table_layout.remove_widget(child)
+        
         self.task_count = 0
         self.finished = 0
+
         Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+
         self.check_task_count()
         self.progress_bar()
 
