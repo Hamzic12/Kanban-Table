@@ -43,7 +43,7 @@
                             size: self.size
 
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 1, 1, 1, 1  
                         Line: # Draw the left border
                             points: [self.x, self.y, self.x, self.y + self.height]
                             width: 2
@@ -60,7 +60,7 @@
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 1, 1, 1, 1  
                         Line: # Draw the right border
                             points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
                             width: 2
@@ -77,10 +77,12 @@
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1  
                         Line: # Draw the right border
                             points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
                             width: 2
+                        Color:
+                            rgba: 1, 1, 1, 1
                         Line: # Draw the left border
                             points: [self.x, self.y, self.x, self.y + self.height]
                             width: 2 
@@ -90,22 +92,26 @@
 
             RelativeLayout:  
                 id: table_id
+
+                # Top border (moved slightly to the left)
                 Widget:
                     canvas.before:
                         Color:
-                            rgba: 1, 1, 1, 1  # Border color (black)
+                            rgba: 1, 1, 1, 1  # Border color (white)
                         Line:
-                            points: [self.x, self.y, self.x + self.width, self.y]
+                            points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height]  # Moved 5 pixels left
+                            width: 2
+
+                # Bottom border (moved slightly to the left)
+                Widget:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # Border color (white)
+                        Line:
+                            points: [self.x - 5, self.y, self.x + self.width - 5, self.y]  # Moved 5 pixels left
                             width: 3
 
-                Widget:
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # Border color (black)
-                        Line:
-                            points: [self.x, self.y + self.height, self.x + self.width, self.y + self.height]
-                            width: 2
-                 # Vertical lines separating columns
+                # Vertical lines separating columns (centered)
                 Widget:
                     canvas.before:
                         Color:
@@ -120,14 +126,15 @@
                             points: [self.x + 3 * self.width / 4, self.y, self.x + 3 * self.width / 4, self.y + self.height]  # Third vertical line
                             width: 2
 
-                # White line on the right side where you drew the blue line
+                # Right-side line (moved slightly to the left)
                 Widget:
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1  # White line color
                         Line:
-                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]  # Line on the far right
-                            width: 1
+                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height]  # Moved 5 pixels left
+                            width: 2
+
 
 
             # bar showing progress
