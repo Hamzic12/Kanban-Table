@@ -1,4 +1,5 @@
 import kivy
+import datetime
 from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
@@ -7,14 +8,13 @@ from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 
-class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
-    # completion bar made up of 4 fuarters
+class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     days = ObjectProperty(None)
     task = ObjectProperty(None)
     task_count = 0
     finished = 0
     disabled_add = BooleanProperty(False)
-
+    bad_points = 0 # every time there is a delayed task by a day it means more punishment
     f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
     f3 = NumericProperty(0)
@@ -32,7 +32,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         table_layout = self.ids.table_id 
         for child in table_layout.children:
             if isinstance(child,Label):
-                if child.collide_point(*touch.pos):
+                if child.collide_point(touch.x, touch.y):
                     print(child.pos)
 
         return super().on_touch_down(touch)     # Pass the touch event to children or other widgets
@@ -41,14 +41,19 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         table_layout = self.ids.table_id  # relative layout id
 
         task_str = str(self.task.text)
+        
+        if self.days.text != "": # fixed when clicking add and days input field is empty stops the app
+            days_int = int(self.days.text)
+            days_to_date = datetime.date.today() + datetime.timedelta(days=days_int)
+        
         x_pos = 0.005  # Horizontal position for the task
         y_pos = 0.908 - 0.1 * self.task_count  # Vertical position, spaced out per task
 
-        if self.task.text != "":
-            task_label = Label(text=task_str, font_size = "20sp", color=(0,0,0,1),
+        if self.task.text != "" and self.days.text != "":
+            task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp", color=(0,0,0,1),
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(185, 50))
-            
+            task_label.due_date = days_to_date
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
                 Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
@@ -69,15 +74,16 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
         self.check_task_count()
-        self.task.text = "" # Clear the input text for the next task
-    
+        self.task.text = "" # Clears input field for tasks
+        self.days.text = "" # Clears input field for days
+
     def progress_bar(self):  # Track progress based on position
         finish_stage = 0.755  # position for when task is finished
         
         for child in self.table_layout.children:
             if isinstance(child, Label):
                 curr_pos = child.pos_hint.get('x')
-                if curr_pos >= finish_stage and not hasattr(child, 'is_finished'):
+                if curr_pos == finish_stage and not hasattr(child, 'is_finished'):
                     child.is_finished = True
                     self.finished += 1
                 elif curr_pos < finish_stage and hasattr(child, 'is_finished'):
@@ -128,12 +134,25 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def save_progress(self): # save to database
         pass
-
+    
+    def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
+        table_layout = self.ids.table_id
+        for child in table_layout.children:
+            if hasattr(child, 'due_date'):
+                if child.due_date < datetime.date.today(): # checks if today is later than date of task
+                    self.bad_points += 1 # for every late task is a + for bad points for punishment
+                    print(self.bad_points)
+    
+    def every_24h(self): # right now 1 second to try it
+        Clock.schedule_interval(self.check_late_tasks, 1) # checks every 24 hours (in seconds) if there is a late task
+    
 class Kanban(App):
 
     def build(self):
         Window.size = (1024, 768)
-        return app_layout()
+        layout = App_layout()
+        layout.every_24h()
+        return layout
     
 if __name__ == "__main__":
     Kanban().run()
