@@ -105,6 +105,29 @@
                         Line:
                             points: [self.x, self.y + self.height, self.x + self.width, self.y + self.height]
                             width: 2
+                 # Vertical lines separating columns
+                Widget:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # White color for the lines
+                        Line:
+                            points: [self.x + self.width / 4, self.y, self.x + self.width / 4, self.y + self.height]  # First vertical line
+                            width: 2
+                        Line:
+                            points: [self.x + self.width / 2, self.y, self.x + self.width / 2, self.y + self.height]  # Second vertical line
+                            width: 2
+                        Line:
+                            points: [self.x + 3 * self.width / 4, self.y, self.x + 3 * self.width / 4, self.y + self.height]  # Third vertical line
+                            width: 2
+
+                # White line on the right side where you drew the blue line
+                Widget:
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1  # White line color
+                        Line:
+                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]  # Line on the far right
+                            width: 1
 
 
             # bar showing progress
