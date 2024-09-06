@@ -34,7 +34,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         task_str = str(self.task.text)
         x_pos = 0.005  # Horizontal position for the task
-        y_pos = 0.9 - 0.1 * self.task_count  # Vertical position, spaced out per task
+        y_pos = 0.908 - 0.1 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "":
             task_label = Label(text=task_str, font_size = "20sp", color=(0,0,0,1),
