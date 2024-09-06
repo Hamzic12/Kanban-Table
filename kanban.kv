@@ -92,12 +92,15 @@
 
             RelativeLayout:  
                 id: table_id
+                canvas.before:
+                    Color:
+                        rgba: 1,1,1,1
 
                 # Top border (moved slightly to the left)
                 Widget:
                     canvas.before:
                         Color:
-                            rgba: 1, 1, 1, 1  # Border color (white)
+                            rgba: 1, 1, 1, 1 # White
                         Line:
                             points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height]  # Moved 5 pixels left
                             width: 2
@@ -106,7 +109,7 @@
                 Widget:
                     canvas.before:
                         Color:
-                            rgba: 1, 1, 1, 1  # Border color (white)
+                            rgba: 1, 1, 1, 1 
                         Line:
                             points: [self.x - 5, self.y, self.x + self.width - 5, self.y]  # Moved 5 pixels left
                             width: 3

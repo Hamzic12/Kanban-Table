@@ -28,6 +28,14 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         else:
             self.disabled_add = False
     
+    def on_touch_down(self, touch):
+        table_layout = self.ids.table_id 
+        for child in table_layout.children:
+            if isinstance(child,Label):
+                if child.collide_point(*touch.pos):
+                    print(child.pos)
+
+        return super().on_touch_down(touch)     # Pass the touch event to children or other widgets
     
     def add_task(self):  # take input field text, make widget with text and date
         table_layout = self.ids.table_id  # relative layout id
@@ -49,6 +57,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
                 label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
 
+                # Bind the rectangle for higlighting the task to task_label
                 task_label.bind(pos=lambda instance, value: setattr(highlight_task, 'pos', (task_label.pos[0] - 4, task_label.pos[1] - 4)))
                 task_label.bind(size=lambda instance, value: setattr(highlight_task, 'size', (task_label.size[0] + 8, task_label.size[1] + 8)))
 
@@ -61,8 +70,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
         self.check_task_count()
         self.task.text = "" # Clear the input text for the next task
-        
-
+    
     def progress_bar(self):  # Track progress based on position
         finish_stage = 0.755  # position for when task is finished
         
@@ -99,14 +107,14 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] > 0.0050000000000000044:
+            if isinstance(child, Label) and child.pos_hint['x'] > 0.0051:
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
         # TODO to choose which labels gets moved
 
     def clear_table(self): # clear
-        for child in list(self.table_layout.children):
+        for child in list(self.table_layout.children): # now it removes only labels, not the lines
             if isinstance(child, Label):
                 self.table_layout.remove_widget(child)
         
@@ -124,7 +132,7 @@ class app_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 class Kanban(App):
 
     def build(self):
-        Window.size = (1024, 768) 
+        Window.size = (1024, 768)
         return app_layout()
     
 if __name__ == "__main__":
