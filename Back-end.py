@@ -20,6 +20,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
+    highlight_color = ObjectProperty([0,0,0,1])
 
     def check_task_count(self):
         self.table_layout = self.ids.table_id # To avoid repeating it in every method
@@ -58,9 +59,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                             size_hint=(None, None), size=(185, 50))
             task_label.due_date = days_to_date
             task_label.chosen = False
+
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
-                Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
+                Color(self.highlight_color, mode="rgba")
                 highlight_task = Rectangle(pos=(task_label.pos[0] - 4, task_label.pos[1] - 4), size=(task_label.size[0] + 8, task_label.size[1] + 8))
 
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
@@ -106,7 +108,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         to_be_removed = [child for child in self.table_layout.children if isinstance(child, Label) and child.chosen is True]
         for removee in to_be_removed:
             self.table_layout.remove_widget(removee)
+            
+        self.progress_bar()
         Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+
 
     def move_right(self): # add value to x
         for child in self.table_layout.children:
@@ -114,9 +119,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 child.pos_hint['x'] += 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
-        
-        # TODO to choose which labels gets moved DONE
- 
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
@@ -124,7 +126,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
-        # TODO to choose which labels gets moved DONE
 
     def clear_table(self): # clear
         for child in list(self.table_layout.children): # now it removes only labels, not the lines
@@ -153,6 +154,15 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def every_24h(self): # right now 1 second to try it
         Clock.schedule_interval(self.check_late_tasks, 10123) # checks every 24 hours (in seconds) if there is a late task
     
+    def update_color(self, label, value):
+        if label.chosen is True:
+            self.highlight_color = [0,0,0,1]
+        else:
+            self.highlight_color = [0,0,0,1]
+        
+        with label.canvas.before:
+            Color(*self.highlight_color, mode="rgba")
+
 class Kanban(App):
 
     def build(self):
