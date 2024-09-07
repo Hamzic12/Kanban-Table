@@ -29,13 +29,16 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             self.disabled_add = False
     
     def on_touch_down(self, touch):
-        table_layout = self.ids.table_id 
-        for child in table_layout.children:
-            if isinstance(child,Label):
-                if child.collide_point(touch.x, touch.y):
-                    print(child.pos)
+        table_layout = self.ids.table_id
 
-        return super().on_touch_down(touch)     # Pass the touch event to children or other widgets
+        for child in table_layout.children:
+            if isinstance(child, Label):
+                x, y = table_layout.to_widget(*touch.pos) # had to unpack it to two variables
+                if child.collide_point(x,y):
+                    if hasattr(child, 'chosen'):
+                        child.chosen = not child.chosen
+                        return True# Label was touched, consume the event
+        return super().on_touch_down(touch)
     
     def add_task(self):  # take input field text, make widget with text and date
         table_layout = self.ids.table_id  # relative layout id
@@ -54,6 +57,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(185, 50))
             task_label.due_date = days_to_date
+            task_label.chosen = False
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
                 Color(1, 1, 1, 1, mode='rgba') # rectangle for highlight
@@ -99,25 +103,28 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
     def delete_task(self): # if chosen delete
-        pass
+        to_be_removed = [child for child in self.table_layout.children if isinstance(child, Label) and child.chosen is True]
+        for removee in to_be_removed:
+            self.table_layout.remove_widget(removee)
+        Clock.schedule_once(lambda dt: self.table_layout.do_layout())
 
     def move_right(self): # add value to x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] < 0.755:
+            if isinstance(child, Label) and child.pos_hint['x'] < 0.755 and child.chosen is True:
                 child.pos_hint['x'] += 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
         
-        # TODO to choose which labels gets moved
+        # TODO to choose which labels gets moved DONE
  
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] > 0.0051:
+            if isinstance(child, Label) and child.pos_hint['x'] > 0.0051 and child.chosen is True:
                 child.pos_hint['x'] -= 0.25
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
-        # TODO to choose which labels gets moved
+        # TODO to choose which labels gets moved DONE
 
     def clear_table(self): # clear
         for child in list(self.table_layout.children): # now it removes only labels, not the lines
@@ -144,7 +151,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     print(self.bad_points)
     
     def every_24h(self): # right now 1 second to try it
-        Clock.schedule_interval(self.check_late_tasks, 1) # checks every 24 hours (in seconds) if there is a late task
+        Clock.schedule_interval(self.check_late_tasks, 10123) # checks every 24 hours (in seconds) if there is a late task
     
 class Kanban(App):
 
