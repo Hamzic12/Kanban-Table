@@ -20,7 +20,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
-    highlight_color = ObjectProperty([0,0,0,1])
 
     def check_task_count(self):
         self.table_layout = self.ids.table_id # To avoid repeating it in every method
@@ -37,6 +36,9 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 x, y = table_layout.to_widget(*touch.pos) # had to unpack it to two variables
                 if child.collide_point(x,y):
                     if hasattr(child, 'chosen'):
+                        for other_child in table_layout.children:
+                            if isinstance(other_child, Label):
+                                other_child.chosen = False
                         child.chosen = not child.chosen
                         return True# Label was touched, consume the event
         return super().on_touch_down(touch)
@@ -51,7 +53,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             days_to_date = datetime.date.today() + datetime.timedelta(days=days_int)
         
         x_pos = 0.005  # Horizontal position for the task
-        y_pos = 0.908 - 0.1 * self.task_count  # Vertical position, spaced out per task
+        y_pos = 0.91 - 0.1 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "" and self.days.text != "":
             task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp", color=(0,0,0,1),
@@ -62,7 +64,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
-                Color(self.highlight_color, mode="rgba")
+                Color(0,0,0,1, mode="rgba")
                 highlight_task = Rectangle(pos=(task_label.pos[0] - 4, task_label.pos[1] - 4), size=(task_label.size[0] + 8, task_label.size[1] + 8))
 
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
@@ -78,10 +80,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
             table_layout.add_widget(task_label)
 
-        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
-        self.check_task_count()
         self.task.text = "" # Clears input field for tasks
         self.days.text = "" # Clears input field for days
+        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
+        self.check_task_count()
 
     def progress_bar(self):  # Track progress based on position
         finish_stage = 0.755  # position for when task is finished
@@ -105,10 +107,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
     def delete_task(self): # if chosen delete
-        to_be_removed = [child for child in self.table_layout.children if isinstance(child, Label) and child.chosen is True]
-        for removee in to_be_removed:
-            self.table_layout.remove_widget(removee)
-            
+        for child in self.table_layout.children:
+            if isinstance(child, Label) and child.chosen is True:
+                self.table_layout.remove_widget(child)
+
         self.progress_bar()
         Clock.schedule_once(lambda dt: self.table_layout.do_layout())
 
