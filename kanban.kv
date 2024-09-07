@@ -32,6 +32,11 @@
                         Rectangle:
                             pos: self.pos
                             size: self.size
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Line: # Draw the left border
+                            points: [self.x, self.y, self.x, self.y + self.height]
+                            width: 2 
 
                 Label:
                     text: "In Progress"
@@ -77,9 +82,9 @@
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  
+                            rgba: 1, 1, 1, 1  
                         Line: # Draw the right border
-                            points: [self.x + self.width, self.y, self.x + self.width, self.y + self.height]
+                            points: [self.x + self.width - 3, self.y, self.x + self.width - 3, self.y + self.height]
                             width: 2
                         Color:
                             rgba: 1, 1, 1, 1
@@ -92,26 +97,23 @@
 
             RelativeLayout:  
                 id: table_id
-                canvas.before:
-                    Color:
-                        rgba: 1,1,1,1
 
-                # Top border (moved slightly to the left)
+                # Top border 
                 Widget:
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1 # White
                         Line:
-                            points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height]  # Moved 5 pixels left
+                            points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height]
                             width: 2
 
-                # Bottom border (moved slightly to the left)
+                # Bottom border 
                 Widget:
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1 
                         Line:
-                            points: [self.x - 5, self.y, self.x + self.width - 5, self.y]  # Moved 5 pixels left
+                            points: [self.x - 5, self.y, self.x + self.width - 5, self.y]
                             width: 3
 
                 # Vertical lines separating columns (centered)
@@ -119,23 +121,27 @@
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1  # White color for the lines
-                        Line:
-                            points: [self.x + self.width / 4, self.y, self.x + self.width / 4, self.y + self.height]  # First vertical line
+                        Line:  
+                            points: [self.x + self.width / 100 - 6, self.y, self.x + self.width / 100 - 6, self.y + self.height] # first line
                             width: 2
                         Line:
-                            points: [self.x + self.width / 2, self.y, self.x + self.width / 2, self.y + self.height]  # Second vertical line
+                            points: [self.x + self.width / 4, self.y, self.x + self.width / 4, self.y + self.height]  
                             width: 2
                         Line:
-                            points: [self.x + 3 * self.width / 4, self.y, self.x + 3 * self.width / 4, self.y + self.height]  # Third vertical line
+                            points: [self.x + self.width / 2, self.y, self.x + self.width / 2, self.y + self.height]  
+                            width: 2
+                        Line:
+                            points: [self.x + 3 * self.width / 4, self.y, self.x + 3 * self.width / 4, self.y + self.height]  # last line
                             width: 2
 
-                # Right-side line (moved slightly to the left)
+
+                # Right-side line 
                 Widget:
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1  # White line color
                         Line:
-                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height]  # Moved 5 pixels left
+                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height]
                             width: 2
 
 
