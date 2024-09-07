@@ -1,5 +1,6 @@
 import kivy
 import datetime
+import math
 from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
@@ -33,14 +34,18 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         for child in table_layout.children:
             if isinstance(child, Label):
-                x, y = table_layout.to_widget(*touch.pos) # had to unpack it to two variables
-                if child.collide_point(x,y):
-                    if hasattr(child, 'chosen'):
+                x, y = table_layout.to_widget(*touch.pos)
+                if child.collide_point(x, y):
+                    if child.chosen is True:
+                        child.chosen = False # If the label is already chosen, unselect it
+                    else:
                         for other_child in table_layout.children:
                             if isinstance(other_child, Label):
-                                other_child.chosen = False
-                        child.chosen = not child.chosen
-                        return True# Label was touched, consume the event
+                                other_child.chosen = False  # Deselects everyone else
+                        child.chosen = True 
+                    
+                    return True  # Label was touched, consume the event
+
         return super().on_touch_down(touch)
     
     def add_task(self):  # take input field text, make widget with text and date
@@ -52,13 +57,13 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             days_int = int(self.days.text)
             days_to_date = datetime.date.today() + datetime.timedelta(days=days_int)
         
-        x_pos = 0.005  # Horizontal position for the task
-        y_pos = 0.91 - 0.1 * self.task_count  # Vertical position, spaced out per task
+        x_pos = 0.018  # Horizontal position for the task
+        y_pos = 0.905 - 0.098 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "" and self.days.text != "":
             task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp", color=(0,0,0,1),
                             pos_hint={'x': x_pos, 'y': y_pos},
-                            size_hint=(None, None), size=(185, 50))
+                            size_hint=(None, None), size=(170, 50))
             task_label.due_date = days_to_date
             task_label.chosen = False
 
@@ -86,7 +91,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.check_task_count()
 
     def progress_bar(self):  # Track progress based on position
-        finish_stage = 0.755  # position for when task is finished
+        finish_stage = 0.765 # position for when task is finished
         
         for child in self.table_layout.children:
             if isinstance(child, Label):
@@ -110,22 +115,24 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
                 self.table_layout.remove_widget(child)
-
+                self.task_count -= 1
         self.progress_bar()
         Clock.schedule_once(lambda dt: self.table_layout.do_layout())
 
 
     def move_right(self): # add value to x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] < 0.755 and child.chosen is True:
-                child.pos_hint['x'] += 0.25
+            if isinstance(child, Label) and child.pos_hint['x'] < 0.765 and child.chosen is True:
+                child.pos_hint['x'] += 0.2487
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+                print(child.pos_hint)
+                print(self.finished)
         self.progress_bar()
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] > 0.0051 and child.chosen is True:
-                child.pos_hint['x'] -= 0.25
+            if isinstance(child, Label) and child.pos_hint['x'] > 0.019 and child.chosen is True:
+                child.pos_hint['x'] -= 0.2487
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
 
