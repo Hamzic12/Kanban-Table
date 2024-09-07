@@ -21,6 +21,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
+    finish_stage = 0.7641 # position for when task is finished
+    beginning_stage = 0.019
 
     def check_task_count(self):
         self.table_layout = self.ids.table_id # To avoid repeating it in every method
@@ -64,8 +66,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp", color=(0,0,0,1),
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(170, 50))
+            
             task_label.due_date = days_to_date
             task_label.chosen = False
+            task_label.is_finished = False
 
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
@@ -91,16 +95,15 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.check_task_count()
 
     def progress_bar(self):  # Track progress based on position
-        finish_stage = 0.765 # position for when task is finished
         
         for child in self.table_layout.children:
             if isinstance(child, Label):
                 curr_pos = child.pos_hint.get('x')
-                if curr_pos == finish_stage and not hasattr(child, 'is_finished'):
+                if curr_pos == self.finish_stage and child.is_finished is False:
                     child.is_finished = True
                     self.finished += 1
-                elif curr_pos < finish_stage and hasattr(child, 'is_finished'):
-                    delattr(child, 'is_finished')
+                elif curr_pos < self.finish_stage and child.is_finished is True:
+                    child.is_finished = False
                     self.finished -= 1
 
         # Update progress bar
@@ -114,24 +117,28 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def delete_task(self): # if chosen delete
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
+                if child.is_finished is True:
+                    child.is_finished = False
+                    self.finished -= 1
+                
                 self.table_layout.remove_widget(child)
                 self.task_count -= 1
-        self.progress_bar()
+
+            self.progress_bar()
         Clock.schedule_once(lambda dt: self.table_layout.do_layout())
 
 
     def move_right(self): # add value to x
+        
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] < 0.765 and child.chosen is True:
+            if isinstance(child, Label) and child.pos_hint['x'] < self.finish_stage and child.chosen is True:
                 child.pos_hint['x'] += 0.2487
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
-                print(child.pos_hint)
-                print(self.finished)
         self.progress_bar()
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
-            if isinstance(child, Label) and child.pos_hint['x'] > 0.019 and child.chosen is True:
+            if isinstance(child, Label) and child.pos_hint['x'] > self.beginning_stage and child.chosen is True:
                 child.pos_hint['x'] -= 0.2487
                 Clock.schedule_once(lambda dt: self.table_layout.do_layout())
         self.progress_bar()
@@ -162,15 +169,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     
     def every_24h(self): # right now 1 second to try it
         Clock.schedule_interval(self.check_late_tasks, 10123) # checks every 24 hours (in seconds) if there is a late task
-    
-    def update_color(self, label, value):
-        if label.chosen is True:
-            self.highlight_color = [0,0,0,1]
-        else:
-            self.highlight_color = [0,0,0,1]
-        
-        with label.canvas.before:
-            Color(*self.highlight_color, mode="rgba")
 
 class Kanban(App):
 
