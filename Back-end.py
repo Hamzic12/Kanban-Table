@@ -1,6 +1,7 @@
 import kivy
 import datetime
 import math
+from Punishments import *
 from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
@@ -167,8 +168,14 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
                     print(self.bad_points)
     
+    def punishment_activator(self, dt):
+        if self.bad_points == 1:
+            punishments = Consequences()
+            punishments.pop_up()
+
     def every_24h(self): # right now 1 second to try it
-        Clock.schedule_interval(self.check_late_tasks, 10123) # checks every 24 hours (in seconds) if there is a late task
+        Clock.schedule_interval(self.check_late_tasks, 1) # checks every 24 hours (in seconds) if there is a late task
+        Clock.schedule_interval(self.punishment_activator, 1)
 
 class Kanban(App):
 
