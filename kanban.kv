@@ -228,7 +228,7 @@
             Button:
                 text: "Edit"
                 size_hint: 0.5, 0.1
-                on_press: root.P.pop_up()
+                on_press: root.pop_up()
 
             Button:
                 text: "Clear table"
@@ -271,4 +271,14 @@
                 multiline: False
                 size_hint: 1, 0.1
 
+<p_edit>: # popup window
+    changed_task : new_task
+    cols: 1
+    rows: 2
+
+    TextInput:
+        id : new_task
+    Button:
+        text : "Press me"
+        on_press: root.al.edit_task()
             

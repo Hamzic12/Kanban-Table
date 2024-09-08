@@ -9,17 +9,11 @@ from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from kivy.uix.popup import Popup
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.lang import Builder
+from kivy.uix.gridlayout import GridLayout
 
 
-class P_edit(RelativeLayout):
+
     
-    def pop_up(self):
-        content = Builder.load_file('p_edit.kv')
-        popup = Popup(title='My Popup', content=content, size_hint=(0.8, 0.8))
-        popup.open()
-
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     days = ObjectProperty(None)
     task = ObjectProperty(None)
@@ -34,8 +28,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
     
+    p = None
     punishments = Consequences()
-    P = P_edit()
 
     finish_stage = 0.7641 # position for when task is finished
     beginning_stage = 0.019
@@ -173,15 +167,30 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task_count = 0
         self.finished = 0
 
-        self.table_layout.do_layout()
-
         self.check_task_count()
         self.progress_bar()
 
-    def edit_task(self): # edit tasks
-        for child in self.table_layout.children:
+        self.table_layout.do_layout()
+
+    def pop_up(self):
+        self.p = P_edit()
+        table_layout = self.ids.table_id
+        for child in table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
-                pass
+                popupWindow = Popup(title="Edit task", content = self.p, size_hint = (None, None), size=(400,400))
+                popupWindow.open()
+
+    def edit_task(self): # edit tasks
+        if self.p is not None and self.p.changed_task is not None:
+            ct = self.p.changed_task.text
+            ct_str = str(ct)
+        
+        table_layout = self.ids.table_id
+        for child in table_layout.children:
+            if isinstance(child, Label) and child.chosen is True:
+                child.text = ct_str
+            
+        self.table_layout.do_layout()
     
     def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
         table_layout = self.ids.table_id
@@ -205,6 +214,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
         Clock.schedule_interval(self.punishment_activator, 2)
 
+
+class P_edit(GridLayout):
+    changed_task = ObjectProperty(None)
+    al = App_layout()
 
 class Kanban(App):
 
