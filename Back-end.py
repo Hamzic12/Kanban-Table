@@ -16,12 +16,16 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     task_count = 0
     finished = 0
     disabled_add = BooleanProperty(False)
-    bad_points = 0 # every time there is a delayed task by a day it means more punishment
+    bad_points = 0 # for every delayed task plus bad points every day => worse punishment
+    
     f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
+    
+    punishments = Consequences()
+
     finish_stage = 0.7641 # position for when task is finished
     beginning_stage = 0.019
 
@@ -45,8 +49,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                         for other_child in table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
-                        child.chosen = True 
-                    
+                        child.chosen = True
                     return True  # Label was touched, consume the event
 
         return super().on_touch_down(touch)
@@ -116,17 +119,24 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
     def delete_task(self): # if chosen delete
+        removed_child = None
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
-                if child.is_finished is True:
+                if child.is_finished is True: # if it was in the done stage
                     child.is_finished = False
                     self.finished -= 1
                 
+                removed_child = child 
                 self.table_layout.remove_widget(child)
                 self.task_count -= 1
 
+        if removed_child.pos_hint['y'] is not None:
+            for child in self.table_layout.children:
+                if isinstance(child, Label) and removed_child.pos_hint['y'] > child.pos_hint['y']:
+                    child.pos_hint['y'] += 0.1
+
             self.progress_bar()
-        Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+        self.table_layout.do_layout()
 
 
     def move_right(self): # add value to x
@@ -134,14 +144,14 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] < self.finish_stage and child.chosen is True:
                 child.pos_hint['x'] += 0.2487
-                Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+                self.table_layout.do_layout()
         self.progress_bar()
 
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] > self.beginning_stage and child.chosen is True:
                 child.pos_hint['x'] -= 0.2487
-                Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+                self.table_layout.do_layout()
         self.progress_bar()
 
     def clear_table(self): # clear
@@ -152,7 +162,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task_count = 0
         self.finished = 0
 
-        Clock.schedule_once(lambda dt: self.table_layout.do_layout())
+        self.table_layout.do_layout()
 
         self.check_task_count()
         self.progress_bar()
@@ -166,16 +176,21 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if hasattr(child, 'due_date'):
                 if child.due_date < datetime.date.today(): # checks if today is later than date of task
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
-                    print(self.bad_points)
     
     def punishment_activator(self, dt):
-        if self.bad_points == 1:
-            punishments = Consequences()
-            punishments.pop_up()
+        if self.bad_points >= 1:
+            self.punishments.Motivator()
+        if self.bad_points >= 3:
+            self.punishments.Motivator()
+        if self.bad_points  >= 6:
+            self.punishments.Motivator()
+        if self.bad_points >= 10:
+            self.punishments.Motivator() 
+
 
     def every_24h(self): # right now 1 second to try it
-        Clock.schedule_interval(self.check_late_tasks, 1) # checks every 24 hours (in seconds) if there is a late task
-        Clock.schedule_interval(self.punishment_activator, 1)
+        Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
+        Clock.schedule_interval(self.punishment_activator, 2)
 
 class Kanban(App):
 
