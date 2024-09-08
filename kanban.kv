@@ -226,9 +226,9 @@
             spacing : "5 dp"
             
             Button:
-                text: "Save"
+                text: "Edit"
                 size_hint: 0.5, 0.1
-                on_press: root.save_progress()
+                on_press: root.P.pop_up()
 
             Button:
                 text: "Clear table"
@@ -260,8 +260,11 @@
                 id : days
                 hint_text: "Enter the days it will take"
                 multiline: False
+                input_filter: 'int'
                 size_hint: 1, 0.05
-
+                on_text:
+                    if len(self.text.strip()) >= 6: self.readonly = True
+                    else: self.readonly = False # Now only 6 ints are allowed
             TextInput:
                 id: task
                 hint_text: "Enter the task"

@@ -1,6 +1,5 @@
 import kivy
 import datetime
-import math
 from Punishments import *
 from kivy.app import App
 from kivy.core.window import Window 
@@ -9,6 +8,17 @@ from kivy.uix.label import Label
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
+from kivy.uix.popup import Popup
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.lang import Builder
+
+
+class P_edit(RelativeLayout):
+    
+    def pop_up(self):
+        content = Builder.load_file('p_edit.kv')
+        popup = Popup(title='My Popup', content=content, size_hint=(0.8, 0.8))
+        popup.open()
 
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     days = ObjectProperty(None)
@@ -17,7 +27,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     finished = 0
     disabled_add = BooleanProperty(False)
     bad_points = 0 # for every delayed task plus bad points every day => worse punishment
-    
+
     f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
     f3 = NumericProperty(0)
@@ -25,6 +35,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f5 = NumericProperty(0)
     
     punishments = Consequences()
+    P = P_edit()
 
     finish_stage = 0.7641 # position for when task is finished
     beginning_stage = 0.019
@@ -167,8 +178,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.check_task_count()
         self.progress_bar()
 
-    def save_progress(self): # save to database
-        pass
+    def edit_task(self): # edit tasks
+        for child in self.table_layout.children:
+            if isinstance(child, Label) and child.chosen is True:
+                pass
     
     def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
         table_layout = self.ids.table_id
@@ -191,6 +204,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def every_24h(self): # right now 1 second to try it
         Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
         Clock.schedule_interval(self.punishment_activator, 2)
+
 
 class Kanban(App):
 
