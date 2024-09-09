@@ -285,7 +285,7 @@
         multiline: False
         on_text:
             if len(self.text.strip()) >= 18: self.readonly = True
-            else: self.readonly = False # Now only 6 ints are allowed
+            else: self.readonly = False 
     Button:
         text : "Edit"
         on_press: root.edit_task()

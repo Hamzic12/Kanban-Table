@@ -43,8 +43,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     p = P_edit()
     punishments = Consequences()
 
+    beginning_stage = 0.019 # starting position for task
     finish_stage = 0.7641 # position for when task is finished
-    beginning_stage = 0.019
     
     def create_tl(self):
         self.table_layout = self.ids.table_id # To avoid repeating it in every method
@@ -196,22 +196,27 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.table_layout.do_layout()
     
     def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
+        late_tasks = False
         table_layout = self.ids.table_id
         for child in table_layout.children:
             if hasattr(child, 'due_date'):
                 if child.due_date < datetime.date.today(): # checks if today is later than date of task
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
-    
-    def punishment_activator(self, dt):
-        if self.bad_points >= 1:
-            self.punishments.Motivator()
-        if self.bad_points >= 3:
-            self.punishments.Motivator()
-        if self.bad_points  >= 6:
-            self.punishments.Motivator()
-        if self.bad_points >= 10:
-            self.punishments.Motivator() 
+                    late_tasks = True
+                else:
+                    late_tasks = False
+        if late_tasks is False:
+            self.bad_points = 0
 
+    def punishment_activator(self, dt):
+        if self.bad_points == 1:
+            self.punishments.Motivator()
+        if self.bad_points == 3:
+            self.punishments.annoying_popup()
+        if self.bad_points  == 6:
+            self.punishments.annoying_sound()
+        if self.bad_points == 10:
+            self.punishments.block_websites() 
 
     def every_24h(self): # right now 1 second to try it
         Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
