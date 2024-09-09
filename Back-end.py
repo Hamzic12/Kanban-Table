@@ -18,10 +18,10 @@ class P_edit(GridLayout):
     def edit_task(self): # edit tasks
         ct = self.changed_task.text 
         ct_str = str(ct)
-        app = App.get_running_app()
-        al = app.root
+        app = App.get_running_app() # gets instance of running kivy app
+        al = app.root # gets the root widget of the app
         al.get_edited_task(ct_str)
-        ct = ""
+        self.changed_task.text = ""
     
 
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
@@ -87,7 +87,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         y_pos = 0.905 - 0.098 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "" and self.days.text != "":
-            task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp", color=(0,0,0,1),
+            task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp",
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(170, 50))
             
@@ -99,7 +99,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
 
-                Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
+                Color(0, 1, 0, 0.5, mode='rgba')  # rectangle for background of label
                 label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
 
                 # Bind the label_bg position and size to the task_label
@@ -144,12 +144,13 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 self.table_layout.remove_widget(child)
                 self.task_count -= 1
 
-        if removed_child.pos_hint['y'] is not None:
+        if removed_child is not None:
             for child in self.table_layout.children:
                 if isinstance(child, Label) and removed_child.pos_hint['y'] > child.pos_hint['y']:
                     child.pos_hint['y'] += 0.1
 
             self.progress_bar()
+            self.check_task_count()
         self.table_layout.do_layout()
 
     def move_right(self): # add value to x
