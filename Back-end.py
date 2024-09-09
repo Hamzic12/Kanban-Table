@@ -38,33 +38,34 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
 
-    barva = ListProperty((0,0,0,1))
+    text_color = ListProperty((0,0,0,1))
 
     p = P_edit()
     punishments = Consequences()
 
     finish_stage = 0.7641 # position for when task is finished
     beginning_stage = 0.019
+    
+    def create_tl(self):
+        self.table_layout = self.ids.table_id # To avoid repeating it in every method
 
     def check_task_count(self):
-        self.table_layout = self.ids.table_id # To avoid repeating it in every method
         if self.task_count >= 10:
             self.disabled_add = True
         else:
             self.disabled_add = False
     
     def on_touch_down(self, touch):
-        table_layout = self.ids.table_id
 
-        for child in table_layout.children:
+        for child in self.table_layout.children:
             if isinstance(child, Label):
-                x, y = table_layout.to_widget(*touch.pos)
+                x, y = self.table_layout.to_widget(*touch.pos)
                 if child.collide_point(x, y):
                     if child.chosen is True:
                         child.chosen = False # If the label is already chosen, unselect it
                         child.color = (0,0,0,1)
                     else:
-                        for other_child in table_layout.children:
+                        for other_child in self.table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
                                 other_child.color = (0,0,0,1)
@@ -75,7 +76,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         return super().on_touch_down(touch)
     
     def add_task(self):  # take input field text, make widget with text and date
-        table_layout = self.ids.table_id  # relative layout id
 
         task_str = str(self.task.text)
         
@@ -94,7 +94,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.due_date = days_to_date
             task_label.chosen = False
             task_label.is_finished = False
-            task_label.color = self.barva
+            task_label.color = self.text_color
 
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
@@ -106,11 +106,11 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
                 task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
 
-            table_layout.add_widget(task_label)
+            self.table_layout.add_widget(task_label)
 
         self.task.text = "" # Clears input field for tasks
         self.days.text = "" # Clears input field for days
-        self.task_count = sum(1 for child in table_layout.children if isinstance(child, Label))
+        self.task_count = sum(1 for child in self.table_layout.children if isinstance(child, Label))
         self.check_task_count()
 
     def progress_bar(self):  # Track progress based on position
@@ -132,7 +132,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.f4 = 1 if self.finished >= 8 else 0
         self.f5 = 1 if self.finished >= 10 else 0
 
-
     def delete_task(self): # if chosen delete
         removed_child = None
         for child in self.table_layout.children:
@@ -152,7 +151,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
             self.progress_bar()
         self.table_layout.do_layout()
-
 
     def move_right(self): # add value to x
         
@@ -184,19 +182,17 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def pop_up(self):
         self.p = P_edit()
-        table_layout = self.ids.table_id
-        for child in table_layout.children:
+        for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
                 popupWindow = Popup(title="Edit task", content = self.p, size_hint = (None, None), size=(400,400))
                 popupWindow.open()
 
-    def get_edited_task(self, string):
-        table_layout = self.ids.table_id   
-        for child in table_layout.children:
+    def get_edited_task(self, string): 
+        for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
                 child.text = f"{string}\n{child.due_date}"
 
-        table_layout.do_layout()
+        self.table_layout.do_layout()
     
     def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
         table_layout = self.ids.table_id
@@ -224,10 +220,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
 class Kanban(App):
-
     def build(self):
         Window.size = (1024, 768)
         layout = App_layout()
+        layout.create_tl()
         layout.every_24h()
         return layout
     
