@@ -270,6 +270,9 @@
                 hint_text: "Enter the task"
                 multiline: False
                 size_hint: 1, 0.1
+                on_text:
+                    if len(self.text.strip()) >= 18: self.readonly = True
+                    else: self.readonly = False # Now only 6 ints are allowed
 
 <p_edit>: # popup window
     changed_task : new_task
@@ -278,7 +281,12 @@
 
     TextInput:
         id : new_task
+        hint_text: "Edit the task"
+        multiline: False
+        on_text:
+            if len(self.text.strip()) >= 18: self.readonly = True
+            else: self.readonly = False # Now only 6 ints are allowed
     Button:
-        text : "Press me"
-        on_press: root.al.edit_task()
+        text : "Edit"
+        on_press: root.edit_task()
             

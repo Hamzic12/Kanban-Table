@@ -5,7 +5,7 @@ from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
-from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
+from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, ListProperty
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from kivy.uix.popup import Popup
@@ -13,7 +13,17 @@ from kivy.uix.gridlayout import GridLayout
 
 
 
+class P_edit(GridLayout):
+    changed_task = ObjectProperty(None)
+    def edit_task(self): # edit tasks
+        ct = self.changed_task.text 
+        ct_str = str(ct)
+        app = App.get_running_app()
+        al = app.root
+        al.get_edited_task(ct_str)
+        ct = ""
     
+
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     days = ObjectProperty(None)
     task = ObjectProperty(None)
@@ -27,8 +37,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
-    
-    p = None
+
+    barva = ListProperty((0,0,0,1))
+
+    p = P_edit()
     punishments = Consequences()
 
     finish_stage = 0.7641 # position for when task is finished
@@ -50,11 +62,14 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 if child.collide_point(x, y):
                     if child.chosen is True:
                         child.chosen = False # If the label is already chosen, unselect it
+                        child.color = (0,0,0,1)
                     else:
                         for other_child in table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
+                                other_child.color = (0,0,0,1)
                         child.chosen = True
+                        child.color = (1,1,1,1)
                     return True  # Label was touched, consume the event
 
         return super().on_touch_down(touch)
@@ -79,18 +94,13 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.due_date = days_to_date
             task_label.chosen = False
             task_label.is_finished = False
+            task_label.color = self.barva
 
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
-                Color(0,0,0,1, mode="rgba")
-                highlight_task = Rectangle(pos=(task_label.pos[0] - 4, task_label.pos[1] - 4), size=(task_label.size[0] + 8, task_label.size[1] + 8))
 
                 Color(1, 0, 0, 1, mode='rgba')  # rectangle for background of label
                 label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
-
-                # Bind the rectangle for higlighting the task to task_label
-                task_label.bind(pos=lambda instance, value: setattr(highlight_task, 'pos', (task_label.pos[0] - 4, task_label.pos[1] - 4)))
-                task_label.bind(size=lambda instance, value: setattr(highlight_task, 'size', (task_label.size[0] + 8, task_label.size[1] + 8)))
 
                 # Bind the label_bg position and size to the task_label
                 task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
@@ -180,17 +190,13 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 popupWindow = Popup(title="Edit task", content = self.p, size_hint = (None, None), size=(400,400))
                 popupWindow.open()
 
-    def edit_task(self): # edit tasks
-        if self.p is not None and self.p.changed_task is not None:
-            ct = self.p.changed_task.text
-            ct_str = str(ct)
-        
-        table_layout = self.ids.table_id
+    def get_edited_task(self, string):
+        table_layout = self.ids.table_id   
         for child in table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
-                child.text = ct_str
-            
-        self.table_layout.do_layout()
+                child.text = f"{string}\n{child.due_date}"
+
+        table_layout.do_layout()
     
     def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
         table_layout = self.ids.table_id
@@ -215,9 +221,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         Clock.schedule_interval(self.punishment_activator, 2)
 
 
-class P_edit(GridLayout):
-    changed_task = ObjectProperty(None)
-    al = App_layout()
+
 
 class Kanban(App):
 
