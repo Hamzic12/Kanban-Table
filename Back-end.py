@@ -205,6 +205,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     late_tasks = True
                 else:
                     late_tasks = False
+            print(child.pos_hint)
         if late_tasks is False:
             self.bad_points = 0
 
@@ -222,7 +223,17 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
         Clock.schedule_interval(self.punishment_activator, 2)
 
-
+    def save_progress(self):
+        for child in self.table_layout.children:
+            if isinstance(child, Label):
+                t_text = child.text
+                t_position_x = child.pos_hint['x']
+                t_position_y = child.pos_hint['y']
+                t_date = child.due_date
+                t_chosen = child.chosen
+                bad_points = self.bad_points
+                t_finished = child.finished
+        # After loading
 
 
 class Kanban(App):

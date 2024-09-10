@@ -20,7 +20,7 @@ class Consequences:
     def block_websites(self):
         hosts = r"C:\Windows\System32\drivers\etc\hosts"
         redirect = "127.0.0.1"
-        websites = ["www.facebook.com", "www.instagram.com", "www.reddit.com", "www.youtube.com"]
+        websites = ["www.facebook.com", "www.instagram.com", "www.reddit.com", "www.youtube.com", "www.google.com"]
         with open(hosts, 'r+') as file:
             f_content = file.read()
             for site in websites:
