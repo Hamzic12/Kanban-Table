@@ -97,29 +97,18 @@
             RelativeLayout:  
                 id: table_id
 
-                # Top border 
                 Widget:
                     canvas.before:
                         Color:
                             rgba: 1, 1, 1, 1 # White
                         Line:
-                            points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height]
+                            points: [self.x - 5, self.y + self.height, self.x + self.width - 5, self.y + self.height] # Top line
                             width: 2
 
-                # Bottom border 
-                Widget:
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1 
                         Line:
-                            points: [self.x - 5, self.y, self.x + self.width - 5, self.y]
+                            points: [self.x - 5, self.y, self.x + self.width - 5, self.y] # bottom line
                             width: 3
-
-                # Vertical lines separating columns (centered)
-                Widget:
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # White color for the lines
+                        
                         Line:  
                             points: [self.x + self.width / 100 - 6, self.y, self.x + self.width / 100 - 6, self.y + self.height] # first line
                             width: 2
@@ -133,89 +122,22 @@
                             points: [self.x + 3 * self.width / 4, self.y, self.x + 3 * self.width / 4, self.y + self.height]  # last line
                             width: 2
 
-
-                # Right-side line 
-                Widget:
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1  # White line color
                         Line:
-                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height]
-                            width: 2
-
-
+                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height] # Line on the right
+                            width: 2 
 
             # bar showing progress
 
-            GridLayout:  
-                id: progress_id
-                cols: 5
-                size_hint_y: 0.1 
-
-                Widget:
-                    canvas:
-                        Color:
-                            rgba: 0, root.f1, 0, 1  
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                        Color:
-                            rgba: 0, 0, 0, 1 
-                        Line:
-                            rectangle: (self.x, self.y, self.width, self.height)
-                            width: 1 
-
-                Widget:
-                    canvas:
-                        Color:
-                            rgba: 0, root.f2, 0, 1 
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                        Color:
-                            rgba: 0, 0, 0, 1  
-                        Line:
-                            rectangle: (self.x, self.y, self.width, self.height)
-                            width: 1 
-
-                Widget:
-                    canvas:
-                        Color:
-                            rgba: 0, root.f3, 0, 1 
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                        Color:
-                            rgba: 0, 0, 0, 1  
-                        Line:
-                            rectangle: (self.x, self.y, self.width, self.height)
-                            width: 1 
-
-                Widget:
-                    canvas:
-                        Color:
-                            rgba: 0, root.f4, 0, 1  
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                        Color:
-                            rgba: 0, 0, 0, 1  
-                        Line:
-                            rectangle: (self.x, self.y, self.width, self.height)
-                            width: 1
-                Widget:
-                    canvas:
-                        Color:
-                            rgba: 0, root.f5, 0, 1  
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                        Color:
-                            rgba: 0, 0, 0, 1  
-                        Line:
-                            rectangle: (self.x, self.y, self.width, self.height)
-                            width: 1 
-
+            GridLayout:
+                size_hint_y: 0.1
+                id: dynamic_rect_layout
+                canvas.before:
+                    Color:
+                        rgba: 0, 1, 0, 0.8
+                    Rectangle:
+                        id: dynamic_rect
+                        size: self.size
+                        pos: self.pos
           
 
         GridLayout: # borders

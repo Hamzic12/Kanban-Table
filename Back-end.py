@@ -36,7 +36,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     f3 = NumericProperty(0)
     f4 = NumericProperty(0)
     f5 = NumericProperty(0)
-
+    rectangle_height = NumericProperty(10)  # Base height per task
     text_color = ListProperty((0,0,0,1))
 
     p = P_edit()
@@ -53,6 +53,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
     def check_task_count(self):
         self.task_count = sum(1 for child in self.table_layout.children if isinstance(child, Label))
+        
         if self.task_count >= 10:
             self.disabled_add = True
         else:
@@ -129,12 +130,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     child.is_finished = False
                     self.finished -= 1
 
-        # Update progress bar
-        self.f1 = 1 if self.finished >= 2 else 0
-        self.f2 = 1 if self.finished >= 4 else 0
-        self.f3 = 1 if self.finished >= 6 else 0
-        self.f4 = 1 if self.finished >= 8 else 0
-        self.f5 = 1 if self.finished >= 10 else 0
+        if self.finished >= self.task_count:
+            self.canvas.before.children[0].rgba = (0, 1, 0, 0.8)  # Green color
+        else:
+            self.canvas.before.children[0].rgba = (1, 0, 0, 0.8)  # Red color or any other color
 
 
     def delete_task(self): # if chosen delete
