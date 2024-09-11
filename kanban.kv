@@ -21,8 +21,7 @@
             GridLayout:  # stages for the kanban table
                 id: stage_id
                 cols: 4
-                size_hint_y: 0.11  # Takes 20% of the vertical space
-                # Optionally adjust the height proportion based on parent size
+                size_hint_y: 0.11 
 
                 Label:
                     text: "To Do"
@@ -93,7 +92,7 @@
                             width: 2 
 
             
-            # place for tasks
+            # part for tasks
 
             RelativeLayout:  
                 id: table_id
@@ -150,18 +149,18 @@
 
             GridLayout:  
                 id: progress_id
-                cols: 45
-                size_hint_y: 0.1  # Takes 30% of the vertical space
+                cols: 5
+                size_hint_y: 0.1 
 
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.f1, 0, 1  # Adjust color dynamically with root.f1
+                            rgba: 0, root.f1, 0, 1  
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1 
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
                             width: 1 
@@ -169,12 +168,12 @@
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.f2, 0, 1  # Adjust color dynamically with root.f2
+                            rgba: 0, root.f2, 0, 1 
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1  
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
                             width: 1 
@@ -182,12 +181,12 @@
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.f3, 0, 1  # Adjust color dynamically with root.f3
+                            rgba: 0, root.f3, 0, 1 
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1  
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
                             width: 1 
@@ -195,107 +194,138 @@
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.f4, 0, 1  # Adjust color dynamically with root.f4
+                            rgba: 0, root.f4, 0, 1  
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1  
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
                             width: 1
                 Widget:
                     canvas:
                         Color:
-                            rgba: 0, root.f5, 0, 1  # Adjust color dynamically with root.f4
+                            rgba: 0, root.f5, 0, 1  
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         Color:
-                            rgba: 0, 0, 0, 1  # Border color (black)
+                            rgba: 0, 0, 0, 1  
                         Line:
                             rectangle: (self.x, self.y, self.width, self.height)
                             width: 1 
 
-          # user interface
+          
 
-        StackLayout:
-            id: ui_id
-            size_hint_x: 0.3  # This is for the horizontal space
-            orientation: 'lr-bt'
-            spacing : "5 dp"
+        GridLayout: # borders
+            rows: 3
+            size_hint_x: 0.25
+            GridLayout:
+                size_hint_y: 0.11
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1  
+                    Line:
+                        points: [self.x, self.y, self.right, self.y] 
+                        width: 2
+
+            StackLayout: # user interface
+                id: ui_id
+                orientation: 'lr-bt'
+                spacing : "5 dp"
+                
+                Button:
+                    text: "Save"
+                    size_hint: 0.5, 0.1
+                    on_press: root.save_progress()
+                Button:
+                    text: "Load"
+                    size_hint: 0.5, 0.1
+                    on_press: root.load_progress()
+                Button:
+                    text: "Edit"
+                    size_hint: 0.5, 0.1
+                    on_press: root.pop_up()
+
+                Button:
+                    text: "Clear table"
+                    size_hint: 0.5, 0.1
+                    on_press: root.clear_table()
+
+                Button:
+                    text: "Right"
+                    size_hint: 0.5, 0.1
+                    on_press: root.move_right()
+
+                Button:
+                    text: "Left"
+                    size_hint: 0.5, 0.1
+                    on_press: root.move_left()
+                
+                Button:
+                    text: "Add"
+                    size_hint: 0.5, 0.1
+                    on_press: root.add_task()
+                    disabled: root.disabled_add
+                
+                Button:
+                    text: "Remove"
+                    size_hint: 0.5, 0.1
+                    on_press: root.delete_task()
+
+                TextInput:
+                    id : days
+                    hint_text: "Enter the days it will take"
+                    multiline: False
+                    input_filter: 'int'
+                    size_hint: 1, 0.05
+                    on_text:
+                        if len(self.text.strip()) >= 6: self.readonly = True
+                        else: self.readonly = False # Now only 6 ints are allowed
+                TextInput:
+                    id: task
+                    hint_text: "Enter the task"
+                    multiline: False
+                    size_hint: 1, 0.1
+                    on_text:
+                        if len(self.text.strip()) >= 18: self.readonly = True
+                        else: self.readonly = False # Now only 6 ints are allowed
+                Label:
+                    text: str(f"Punishment points: {root.bad_points}")
+                    font_size: 18 
+                    size_hint_y: None
+                    height: 60
+                Label:
+                    text: str(f"Finished tasks: {root.finished}")
+                    font_size: 18 
+                    size_hint_y: None
+                    height: 60
+                Label:
+                    text: str(f"Number of tasks: {root.task_count}")
+                    font_size: 18 
+                    size_hint_y: None
+                    height: 60
             
-            Button:
-                text: "Save"
-                size_hint: 0.5, 0.1
-                on_press: root.save_progress()
-            Button:
-                text: "Load"
-                size_hint: 0.5, 0.1
-                on_press: root.load_progress()
-            Button:
-                text: "Edit"
-                size_hint: 0.5, 0.1
-                on_press: root.pop_up()
-
-            Button:
-                text: "Clear table"
-                size_hint: 0.5, 0.1
-                on_press: root.clear_table()
-
-            Button:
-                text: "Right"
-                size_hint: 0.5, 0.1
-                on_press: root.move_right()
-
-            Button:
-                text: "Left"
-                size_hint: 0.5, 0.1
-                on_press: root.move_left()
-            
-            Button:
-                text: "Add"
-                size_hint: 0.5, 0.1
-                on_press: root.add_task()
-                disabled: root.disabled_add
-            
-            Button:
-                text: "Remove"
-                size_hint: 0.5, 0.1
-                on_press: root.delete_task()
-
-            TextInput:
-                id : days
-                hint_text: "Enter the days it will take"
-                multiline: False
-                input_filter: 'int'
-                size_hint: 1, 0.05
-                on_text:
-                    if len(self.text.strip()) >= 6: self.readonly = True
-                    else: self.readonly = False # Now only 6 ints are allowed
-            TextInput:
-                id: task
-                hint_text: "Enter the task"
-                multiline: False
-                size_hint: 1, 0.1
-                on_text:
-                    if len(self.text.strip()) >= 18: self.readonly = True
-                    else: self.readonly = False # Now only 6 ints are allowed
-            Label:
-                text: str(f"Punishment points: {root.bad_points}")
-                font_size: 18 
-                size_hint_y: None
-                height: 60
-            Label:
-                text: str(f"Finished tasks: {root.finished}")
-                font_size: 18 
-                size_hint_y: None
-                height: 60
-            Label:
-                text: str(f"Number of tasks: {root.task_count}")
-                font_size: 18 
-                size_hint_y: None
-                height: 60
+            GridLayout: # borders
+                size_hint_y: 0.105
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 1, 1  
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                    Color:
+                        rgba: 1, 1, 1, 1  
+                    Line:
+                        points: [self.x, self.top, self.right, self.top]
+                        width: 2
+                    
             
 <p_edit>: # popup window
     changed_task : new_task
