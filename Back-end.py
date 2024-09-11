@@ -1,12 +1,11 @@
 import kivy, datetime, schedule, threading
 from Punishments import *
-from database import *
+from Database import *
 from kivy.app import App
 from kivy.core.window import Window 
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty, ListProperty
-from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from kivy.uix.popup import Popup
 from kivy.uix.gridlayout import GridLayout
@@ -24,7 +23,7 @@ class P_edit(GridLayout):
         self.changed_task.text = ""
     
 
-class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
+class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout with grid layout above and beneath it
     days = ObjectProperty(None)
     task = ObjectProperty(None)
     task_count = NumericProperty(0)
@@ -137,6 +136,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.f4 = 1 if self.finished >= 8 else 0
         self.f5 = 1 if self.finished >= 10 else 0
 
+
     def delete_task(self): # if chosen delete
         removed_child = None
         for child in self.table_layout.children:
@@ -198,6 +198,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 popupWindow = Popup(title="Edit task", content = self.p, size_hint = (None, None), size=(400,400))
                 popupWindow.open()
 
+
     def get_edited_task(self, string): 
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
@@ -257,8 +258,10 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     session.add_all(task)
                 
             session.commit()
+
             saved_tasks = session.query(User_Tasks).all()
-            for task in saved_tasks:
+
+            for task in saved_tasks: # shows all data from database
                 print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
                 f"Date: {task.t_date}, Chosen: {task.t_chosen}, Bad Points: {task.bad_points}, Finished: {task.t_finished}")
             

@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, create_engine, Float, Boolean, MetaData, inspect
+from sqlalchemy import Column, Integer, String, Date, create_engine, Float, Boolean, MetaData
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-engine = create_engine('sqlite:///:memory:', echo=False)
+engine = create_engine('sqlite:///:memory:')
 Base = declarative_base()
 metadata = MetaData()
 

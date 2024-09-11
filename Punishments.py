@@ -30,7 +30,3 @@ class Consequences:
                     file.write(redirect + " " + site + "\n")
         ctypes.windll.user32.MessageBoxW(0, "Enjoy blocked websites", "Reminder", 0x40 | 0x1)
     
-
-
-
-    # TODO invent more/change
