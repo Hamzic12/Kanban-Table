@@ -1,4 +1,4 @@
-import kivy, datetime, schedule, threading, json
+import kivy, datetime, schedule, threading
 from Punishments import *
 from database import *
 from kivy.app import App
@@ -44,16 +44,21 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     punishments = Consequences()
 
     beginning_stage = 0.022 # starting position for task
-    finish_stage = 0.7641 # position for when task is finished
+    finish_stage = 0.7681 # position for when task is finished
+
     
     def create_tl(self):
-        self.table_layout = self.ids.table_id # To avoid repeating it in every method
+         # To avoid repeating it in every method
+        self.table_layout = self.ids.table_id
+
 
     def check_task_count(self):
+        self.task_count = sum(1 for child in self.table_layout.children if isinstance(child, Label))
         if self.task_count >= 10:
             self.disabled_add = True
         else:
             self.disabled_add = False
+
     
     def on_touch_down(self, touch):
 
@@ -74,6 +79,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     return True  # Label was touched, consume the event
 
         return super().on_touch_down(touch)
+    
     
     def add_task(self):  # take input field text, make widget with text and date
 
@@ -110,8 +116,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         self.task.text = "" # Clears input field for tasks
         self.days.text = "" # Clears input field for days
-        self.task_count = sum(1 for child in self.table_layout.children if isinstance(child, Label))
         self.check_task_count()
+
 
     def progress_bar(self):  # Track progress based on position
         
@@ -131,6 +137,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.f3 = 1 if self.finished >= 6 else 0
         self.f4 = 1 if self.finished >= 8 else 0
         self.f5 = 1 if self.finished >= 10 else 0
+
 
     def delete_task(self): # if chosen delete
         removed_child = None
@@ -153,6 +160,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             self.check_task_count()
         self.table_layout.do_layout()
 
+
     def move_right(self): # add value to x
         
         for child in self.table_layout.children:
@@ -161,12 +169,14 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 self.table_layout.do_layout()
         self.progress_bar()
 
+
     def move_left(self): # subtract value from x
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.pos_hint['x'] > self.beginning_stage and child.chosen is True:
                 child.pos_hint['x'] -= 0.2487
                 self.table_layout.do_layout()
         self.progress_bar()
+
 
     def clear_table(self): # clear
         for child in list(self.table_layout.children): # now it removes only labels, not the lines
@@ -181,6 +191,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         self.table_layout.do_layout()
 
+
     def pop_up(self):
         self.p = P_edit()
         for child in self.table_layout.children:
@@ -193,7 +204,9 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if isinstance(child, Label) and child.chosen is True:
                 child.text = f"{string}\n{child.due_date}"
 
+
         self.table_layout.do_layout()
+
     
     def check_late_tasks(self):
         late_tasks = False
@@ -208,6 +221,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         if late_tasks is False:
             self.bad_points = 0
 
+
     def punishment_activator(self):
         if self.bad_points == 1:
             self.punishments.Motivator()
@@ -218,38 +232,66 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         if self.bad_points == 10:
             self.punishments.block_websites() 
 
-    def at_midnight(self):
+
+    def schedule_checker(self):
         while True:
             schedule.run_pending()
             time.sleep(59)
 
+
     def save_progress(self):
-        session.query(User_Tasks).delete()
-        for child in self.table_layout.children:
-            if isinstance(child, Label) and self.task_count != 0:
-                task = [
-                        User_Tasks(t_text = child.text,
-                                t_position_x = child.pos_hint['x'],
-                                t_position_y = child.pos_hint['y'],
-                                t_date = child.due_date,
-                                t_chosen = child.chosen,
-                                bad_points = self.bad_points,
-                                t_finished = child.is_finished)
-                        ]
+        self.check_task_count()
+        if self.task_count != 0:
+            session.query(User_Tasks).delete()
+            for child in self.table_layout.children: 
+                if isinstance(child, Label):
+                    task = [
+                            User_Tasks(t_text = child.text,
+                                    t_position_x = child.pos_hint['x'],
+                                    t_position_y = child.pos_hint['y'],
+                                    t_date = child.due_date,
+                                    t_chosen = child.chosen,
+                                    bad_points = self.bad_points,
+                                    t_finished = child.is_finished)
+                            ]
 
-                session.add_all(task)
-            
-        session.commit()
-        tasks = session.query(User_Tasks).all()
-        
-        for task in tasks:
-            print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
+                    session.add_all(task)
+                
+            session.commit()
+            saved_tasks = session.query(User_Tasks).all()
+            for task in saved_tasks:
+                print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
                 f"Date: {task.t_date}, Chosen: {task.t_chosen}, Bad Points: {task.bad_points}, Finished: {task.t_finished}")
-
             
             
     def load_progress(self):
-        pass
+        saved_tasks = session.query(User_Tasks).all()
+
+        for child in self.table_layout.children:
+            if isinstance(child, Label):
+                self.table_layout.remove_widget(child)
+
+        for task in saved_tasks:
+            task_label = Label(text=f"{task.t_text}", font_size = "15sp",
+                            pos_hint={'x': task.t_position_x, 'y': task.t_position_y},
+                            size_hint=(None, None), size=(170, 50))
+            task_label.due_date = task.t_date
+            task_label.chosen = task.t_chosen
+            task_label.is_finished = task.t_finished
+            task_label.color = (1,1,1,1) if task_label.chosen is True else (0,0,0,1)
+            with task_label.canvas.before:
+
+                Color(0, 1, 0, 0.5, mode='rgba')
+                label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
+
+                task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
+                task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
+            
+            self.table_layout.add_widget(task_label)
+        
+        self.progress_bar()
+        self.check_task_count()          
+        
 
 
 class Kanban(App):
@@ -259,7 +301,7 @@ class Kanban(App):
         layout.create_tl()
         schedule.every().day.at("00:00").do(layout.check_late_tasks)
         schedule.every().day.at("13:00").do(layout.punishment_activator)
-        threading.Thread(target=layout.at_midnight, daemon=True).start()
+        threading.Thread(target=layout.schedule_checker, daemon=True).start()
         return layout
     
 if __name__ == "__main__":
