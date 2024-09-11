@@ -28,10 +28,10 @@ class P_edit(GridLayout):
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout 
     days = ObjectProperty(None)
     task = ObjectProperty(None)
-    task_count = 0
-    finished = 0
+    task_count = NumericProperty(0)
+    finished = NumericProperty(0)
     disabled_add = BooleanProperty(False)
-    bad_points = 0 # for every delayed task plus bad points every day => worse punishment
+    bad_points = NumericProperty(0) # for every delayed task plus bad points every day => worse punishment
 
     f1 = NumericProperty(0) # fifths of the progress bar
     f2 = NumericProperty(0)
@@ -208,17 +208,18 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     late_tasks = False
         if late_tasks is False:
             self.bad_points = 0
+        self.table_layout.do_layout()
 
     def punishment_activator(self, dt):
-        if self.bad_points == 1:
+        """ if self.bad_points == 1:
             self.punishments.Motivator()
         if self.bad_points == 3:
             self.punishments.annoying_popup()
         if self.bad_points  == 6:
             self.punishments.annoying_sound()
         if self.bad_points == 10:
-            self.punishments.block_websites() 
-
+            self.punishments.block_websites()  """
+        pass
     def every_24h(self): # right now 1 second to try it
         Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
         Clock.schedule_interval(self.punishment_activator, 2)
@@ -226,7 +227,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def save_progress(self):
         session.query(User_Tasks).delete()
         for child in self.table_layout.children:
-            if isinstance(child, Label):
+            if isinstance(child, Label) and self.task_count != 0:
                 task = [
                         User_Tasks(t_text = child.text,
                                 t_position_x = child.pos_hint['x'],
@@ -238,17 +239,17 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                         ]
 
                 session.add_all(task)
+            
         session.commit()
         tasks = session.query(User_Tasks).all()
-
-# Print the tasks to see their content
+        
         for task in tasks:
             print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
                 f"Date: {task.t_date}, Chosen: {task.t_chosen}, Bad Points: {task.bad_points}, Finished: {task.t_finished}")
+            
+            
     def load_progress(self):
         pass
-                
-        # After loading
 
 
 class Kanban(App):
