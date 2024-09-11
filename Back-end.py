@@ -124,8 +124,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if isinstance(child, Label):
                 curr_pos = child.pos_hint.get('x')
                 if curr_pos == self.finish_stage and child.is_finished is False:
-                    child.is_finished = True
                     self.finished += 1
+                    child.is_finished = True
                 elif curr_pos < self.finish_stage and child.is_finished is True:
                     child.is_finished = False
                     self.finished -= 1
@@ -183,6 +183,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         
         self.task_count = 0
         self.finished = 0
+        self.bad_points = 0
 
         self.check_task_count()
         self.progress_bar()
@@ -282,14 +283,16 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 Color(0, 1, 0, 0.5, mode='rgba')
                 task_label.bg_color = Color(0, 1, 0, 0.5, mode='rgba')
                 task_label.bg_rect = Rectangle(pos=task_label.pos, size=task_label.size)
-
-                # Update rectangle position and size when the label changes
                 task_label.bind(pos=self.update_rect_pos_size, size=self.update_rect_pos_size)
             
             self.table_layout.add_widget(task_label)
+
+            if task_label.is_finished:
+                self.finished += 1
         
-        self.progress_bar()
-        self.check_task_count()          
+        self.progress_bar() 
+        self.check_task_count()    
+        self.check_late_tasks()      
         
 
 
