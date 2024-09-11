@@ -110,7 +110,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
                 # Bind the label_bg position and size to the task_label
                 task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
-                task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
 
             self.table_layout.add_widget(task_label)
 
@@ -137,7 +136,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.f3 = 1 if self.finished >= 6 else 0
         self.f4 = 1 if self.finished >= 8 else 0
         self.f5 = 1 if self.finished >= 10 else 0
-
 
     def delete_task(self): # if chosen delete
         removed_child = None
@@ -279,19 +277,25 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.chosen = task.t_chosen
             task_label.is_finished = task.t_finished
             task_label.color = (1,1,1,1) if task_label.chosen is True else (0,0,0,1)
+            
             with task_label.canvas.before:
-
                 Color(0, 1, 0, 0.5, mode='rgba')
-                label_bg = Rectangle(pos=task_label.pos, size=task_label.size)
+                task_label.bg_color = Color(0, 1, 0, 0.5, mode='rgba')
+                task_label.bg_rect = Rectangle(pos=task_label.pos, size=task_label.size)
 
-                task_label.bind(pos=lambda instance, value: setattr(label_bg, 'pos', task_label.pos))
-                task_label.bind(size=lambda instance, value: setattr(label_bg, 'size', task_label.size))
+                # Update rectangle position and size when the label changes
+                task_label.bind(pos=self.update_rect_pos_size, size=self.update_rect_pos_size)
             
             self.table_layout.add_widget(task_label)
         
         self.progress_bar()
         self.check_task_count()          
         
+
+
+    def update_rect_pos_size(self, instance, value): # Update the rectangle's position and size to match the label
+        instance.bg_rect.pos = instance.pos
+        instance.bg_rect.size = instance.size
 
 
 class Kanban(App):
