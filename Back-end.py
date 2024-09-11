@@ -266,10 +266,12 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def load_progress(self):
         saved_tasks = session.query(User_Tasks).all()
 
-        for child in self.table_layout.children:
+        for child in list(self.table_layout.children):
             if isinstance(child, Label):
                 self.table_layout.remove_widget(child)
-
+        
+        self.finished = 0
+        
         for task in saved_tasks:
             task_label = Label(text=f"{task.t_text}", font_size = "15sp",
                             pos_hint={'x': task.t_position_x, 'y': task.t_position_y},
