@@ -1,5 +1,4 @@
-import kivy
-import datetime
+import kivy, datetime, schedule, threading, json
 from Punishments import *
 from database import *
 from kivy.app import App
@@ -44,7 +43,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     p = P_edit()
     punishments = Consequences()
 
-    beginning_stage = 0.019 # starting position for task
+    beginning_stage = 0.022 # starting position for task
     finish_stage = 0.7641 # position for when task is finished
     
     def create_tl(self):
@@ -84,7 +83,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             days_int = int(self.days.text)
             days_to_date = datetime.date.today() + datetime.timedelta(days=days_int)
         
-        x_pos = 0.018  # Horizontal position for the task
+        x_pos = self.beginning_stage  # Horizontal position for the task
         y_pos = 0.905 - 0.098 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "" and self.days.text != "":
@@ -196,11 +195,11 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
         self.table_layout.do_layout()
     
-    def check_late_tasks(self, dt): # dt for amount of seconds since the call of this method
+    def check_late_tasks(self):
         late_tasks = False
         table_layout = self.ids.table_id
         for child in table_layout.children:
-            if hasattr(child, 'due_date'):
+            if hasattr(child, 'due_date'): 
                 if child.due_date < datetime.date.today(): # checks if today is later than date of task
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
                     late_tasks = True
@@ -208,21 +207,21 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     late_tasks = False
         if late_tasks is False:
             self.bad_points = 0
-        self.table_layout.do_layout()
 
-    def punishment_activator(self, dt):
-        """ if self.bad_points == 1:
+    def punishment_activator(self):
+        if self.bad_points == 1:
             self.punishments.Motivator()
         if self.bad_points == 3:
             self.punishments.annoying_popup()
         if self.bad_points  == 6:
             self.punishments.annoying_sound()
         if self.bad_points == 10:
-            self.punishments.block_websites()  """
-        pass
-    def every_24h(self): # right now 1 second to try it
-        Clock.schedule_interval(self.check_late_tasks, 2) # checks every 24 hours (in seconds) if there is a late task
-        Clock.schedule_interval(self.punishment_activator, 2)
+            self.punishments.block_websites() 
+
+    def at_midnight(self):
+        while True:
+            schedule.run_pending()
+            time.sleep(59)
 
     def save_progress(self):
         session.query(User_Tasks).delete()
@@ -246,6 +245,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         for task in tasks:
             print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
                 f"Date: {task.t_date}, Chosen: {task.t_chosen}, Bad Points: {task.bad_points}, Finished: {task.t_finished}")
+
             
             
     def load_progress(self):
@@ -257,7 +257,9 @@ class Kanban(App):
         Window.size = (1024, 768)
         layout = App_layout()
         layout.create_tl()
-        layout.every_24h()
+        schedule.every().day.at("00:00").do(layout.check_late_tasks)
+        schedule.every().day.at("13:00").do(layout.punishment_activator)
+        threading.Thread(target=layout.at_midnight, daemon=True).start()
         return layout
     
 if __name__ == "__main__":
