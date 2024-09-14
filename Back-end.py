@@ -120,8 +120,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
     def progress_bar(self):
-        # Reset the finished task count
         self.finished = 0  
+        p_bar = self.ids.progress_bar
         for child in self.table_layout.children:
             if isinstance(child, Label):
                 if child.pos_hint['x'] == self.finish_stage:
@@ -134,22 +134,15 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         
         self.check_task_count()
         if self.task_count > 0:
-            progress_fraction = self.finished / self.task_count
-            self.ids.progress_bar.size_hint_x = progress_fraction
+            p_bar.size_hint_x = self.finished / self.task_count # progress fraction
 
             if self.finished == 0:
-                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1)  # Black when no tasks are finished
+                p_bar.canvas.before.children[0].rgba = (0, 0, 0, 1) 
             else:
-                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 1, 0, 1)  # Green when some tasks are finished
+                p_bar.canvas.before.children[0].rgba = (0, 1, 0, 1)
         else:
-            # No tasks, set progress to zero and make the line black
-            self.ids.progress_bar.size_hint_x = 0
-            self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1)  # Black when no tasks
-
-
-
-
-
+            p_bar.size_hint_x = 0
+            p_bar.canvas.before.children[0].rgba = (0, 0, 0, 1)
 
 
     def delete_task(self): # if chosen delete
@@ -314,7 +307,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.check_task_count()    
         self.check_late_tasks()      
         
-
 
     def update_rect_pos_size(self, instance, value): # Update the rectangle's position and size to match the label
         instance.bg_rect.pos = instance.pos

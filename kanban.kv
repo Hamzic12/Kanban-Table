@@ -123,34 +123,26 @@
                             width: 2
 
                         Line:
-                            points: [self.x + self.width - 5, self.y, self.x + self.width - 5, self.y + self.height] # Line on the right
+                            points: [self.x + self.width , self.y, self.x + self.width , self.y + self.height] # Line on the right
                             width: 2 
 
             # bar showing progress
 
-
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_y: None
-                height: '30dp'  # Adjust as needed to fit your design
-                padding: '5dp'  # Optional padding for aesthetics
+                height: '50dp' 
 
                 ProgressBar:
                     id: progress_bar
-                    size_hint_x: 1  # Starts at 0 and fills up
+                    size_hint_x: 1  
                     height: '20dp'
                     canvas.before:
                         Color:
-                            rgba: 0, 1, 0, 1  # Start with green for the bar
+                            rgba: 0, 0, 0, 1 
                         Rectangle:
                             pos: self.pos
                             size: self.size
-
-
-
-
-
-          
 
         GridLayout: # borders
             rows: 3
@@ -172,7 +164,8 @@
             StackLayout: # user interface
                 id: ui_id
                 orientation: 'lr-bt'
-                spacing : "5 dp"
+                spacing : "2 dp"
+                padding: [5, 0, 0, 0]
                 
                 Button:
                     text: "Save"
@@ -244,18 +237,11 @@
                     size_hint: (1, 0.1)
             
             GridLayout: # borders
-                size_hint_y: 0.105
+                size_hint_y: None
+                height : "53"
                 canvas.before:
                     Color:
-                        rgba: 0, 0, 1, 1  
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-                    Color:
-                        rgba: 1, 1, 1, 1  
-                    Line:
-                        points: [self.x, self.top, self.right, self.top]
-                        width: 2
+                        rgba: 1, 1, 1, 1
                     Line:
                         points: [self.x, self.y, self.x, self.top]
                         width: 2
