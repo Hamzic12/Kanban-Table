@@ -116,24 +116,29 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         self.task.text = "" # Clears input field for tasks
         self.days.text = "" # Clears input field for days
         self.check_task_count()
+        self.progress_bar()
 
 
-    def progress_bar(self):  # Track progress based on position
-        
-        for child in self.table_layout.children:
-            if isinstance(child, Label):
-                curr_pos = child.pos_hint.get('x')
-                if curr_pos == self.finish_stage and child.is_finished is False:
+    def progress_bar(self):
+        self.check_task_count()
+
+        if self.task_count > 0:
+            self.finished = 0  
+            for child in self.table_layout.children:
+                if isinstance(child, Label) and child.is_finished:
                     self.finished += 1
-                    child.is_finished = True
-                elif curr_pos < self.finish_stage and child.is_finished is True:
-                    child.is_finished = False
-                    self.finished -= 1
+            progress_fraction = self.finished / self.task_count
 
-        if self.finished >= self.task_count:
-            self.canvas.before.children[0].rgba = (0, 1, 0, 0.8)  # Green color
+            self.ids.progress_bar.size_hint_x = progress_fraction
+
+            if self.finished == self.task_count:
+                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 1, 0, 1)  
+            else:
+                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1) 
         else:
-            self.canvas.before.children[0].rgba = (1, 0, 0, 0.8)  # Red color or any other color
+            self.ids.progress_bar.size_hint_x = 0
+
+
 
 
     def delete_task(self): # if chosen delete
@@ -164,7 +169,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if isinstance(child, Label) and child.pos_hint['x'] < self.finish_stage and child.chosen is True:
                 child.pos_hint['x'] += 0.2487
                 self.table_layout.do_layout()
-        self.progress_bar()
+                self.progress_bar()
 
 
     def move_left(self): # subtract value from x

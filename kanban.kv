@@ -128,16 +128,28 @@
 
             # bar showing progress
 
-            GridLayout:
-                size_hint_y: 0.1
-                id: dynamic_rect_layout
-                canvas.before:
-                    Color:
-                        rgba: 0, 1, 0, 0.8
-                    Rectangle:
-                        id: dynamic_rect
-                        size: self.size
-                        pos: self.pos
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: '30dp'  # Adjust as needed to fit your design
+                padding: '5dp'  # Optional padding for aesthetics
+
+                ProgressBar:
+                    id: progress_bar
+                    size_hint_x: 1  # Starts at 0 and fills up
+                    height: '20dp'
+                    canvas.before:
+                        Color:
+                            rgba: 0, 1, 0, 1  # Start with green for the bar
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+
+
+
+
           
 
         GridLayout: # borders
