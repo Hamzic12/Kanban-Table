@@ -120,23 +120,34 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
 
 
     def progress_bar(self):
+        # Reset the finished task count
+        self.finished = 0  
+        for child in self.table_layout.children:
+            if isinstance(child, Label):
+                if child.pos_hint['x'] == self.finish_stage:
+                    if child.is_finished is False:  
+                        child.is_finished = True
+                    self.finished += 1  
+                else:
+                    if child.is_finished:  
+                        child.is_finished = False
+        
         self.check_task_count()
-
         if self.task_count > 0:
-            self.finished = 0  
-            for child in self.table_layout.children:
-                if isinstance(child, Label) and child.is_finished:
-                    self.finished += 1
             progress_fraction = self.finished / self.task_count
-
             self.ids.progress_bar.size_hint_x = progress_fraction
 
-            if self.finished == self.task_count:
-                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 1, 0, 1)  
+            if self.finished == 0:
+                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1)  # Black when no tasks are finished
             else:
-                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1) 
+                self.ids.progress_bar.canvas.before.children[0].rgba = (0, 1, 0, 1)  # Green when some tasks are finished
         else:
+            # No tasks, set progress to zero and make the line black
             self.ids.progress_bar.size_hint_x = 0
+            self.ids.progress_bar.canvas.before.children[0].rgba = (0, 0, 0, 1)  # Black when no tasks
+
+
+
 
 
 
