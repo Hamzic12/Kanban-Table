@@ -31,12 +31,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     disabled_add = BooleanProperty(False)
     bad_points = NumericProperty(0) # for every delayed task plus bad points every day => worse punishment
 
-    f1 = NumericProperty(0) # fifths of the progress bar
-    f2 = NumericProperty(0)
-    f3 = NumericProperty(0)
-    f4 = NumericProperty(0)
-    f5 = NumericProperty(0)
-    rectangle_height = NumericProperty(10)  # Base height per task
     text_color = ListProperty((0,0,0,1))
 
     p = P_edit()
