@@ -18,6 +18,6 @@ class User_Tasks(Base):
     t_finished = Column("Task is done", Boolean)
 
 
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()    
+Base.metadata.create_all(engine) # for creating the table
+Session = sessionmaker(bind=engine) # creates session
+session = Session() # new instance for interacting with the DB
