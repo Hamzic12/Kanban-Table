@@ -8,14 +8,15 @@ class Consequences:
     def annoying_popup(self):
         for _ in range(15):
             ctypes.windll.user32.MessageBoxW(0, "Focus on your tasks!!!!", "Reminder", 0x40 | 0x1)
-            time.sleep(0.5)  
+            time.sleep(6)  
     
     
     def annoying_sound(self):
         webbrowser.open('https://youtu.be/iZlpsneDGBQ')
         time.sleep(8)
         for _ in range(15):
-            winsound.Beep(10000, 5000)  # 10000 Hz sound for 5000 ms
+            winsound.Beep(10000, 5000)  # 10000 Hz sound for 5 s
+            time.sleep(4)
 
     def block_websites(self):
         hosts = r"C:\Windows\System32\drivers\etc\hosts"
