@@ -26,7 +26,7 @@ pip install schedule
 - There is a progress bar that shows how is the user doing
     - It is a dynamic bar, which changes sizes as the tasks grow in number
 - Allows the user to save the progress and task data into a in-memory database and afterwards load them back up
-- In case of late tasks there are 4 stages:
+- In case of a red text, it indicates a late tasks, and there are 4 stages of punishments:
     1. A video pops up everyday and motivates the user to finish the tasks in case the user still has punishment points 
     2. Every 6 seconds a there will be a pop up, which will annoy and motivate the user
     3. A video pops up and tells the user that "Actions have consequences" and afterwards will bring pain to the users ears
