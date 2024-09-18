@@ -62,12 +62,12 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 if child.collide_point(x, y):
                     if child.chosen is True:
                         child.chosen = False # If the label is already chosen, unselect it
-                        child.color = (0,0,0,1)
+                        child.color = (1,0,0,1) if child.due_date < datetime.date.today() else (0,0,0,1)
                     else:
                         for other_child in self.table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
-                                other_child.color = (0,0,0,1)
+                                other_child.color = (0,0,0,1) 
                         child.chosen = True
                         child.color = (1,1,1,1)
                     return True  # Label was touched, consume the event
@@ -201,10 +201,11 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 popupWindow.open()
 
 
-    def get_edited_task(self, string): 
+    def get_edited_task(self, ed_string): 
         for child in self.table_layout.children:
             if isinstance(child, Label) and child.chosen is True:
-                child.text = f"{string}\n{child.due_date}"
+                if ed_string is not "":
+                    child.text = f"{ed_string}\n{child.due_date}"
 
 
         self.table_layout.do_layout()
@@ -218,6 +219,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 if child.due_date < datetime.date.today(): # checks if today is later than date of task
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
                     late_tasks = True
+                    late_days += 1
+                    child.color = (1,0,0,1)
                 else:
                     late_tasks = False
         if late_tasks is False:
