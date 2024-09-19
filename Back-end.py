@@ -21,7 +21,9 @@ class P_edit(GridLayout):
         al = app.root # gets the root widget of the app
         al.get_edited_task(ct_str)
         self.changed_task.text = ""
-    
+
+class T_info(GridLayout):
+    pass
 
 class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 grid and next is stack layout with grid layout above and beneath it
     days = ObjectProperty(None)
@@ -32,7 +34,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     bad_points = NumericProperty(0) # for every delayed task plus bad points every day => worse punishment
 
     text_color = ListProperty((0,0,0,1))
-
+    t_properties = ""
     p = P_edit()
     punishments = Consequences()
 
@@ -70,11 +72,23 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                                 other_child.color = (0,0,0,1) 
                         child.chosen = True
                         child.color = (1,1,1,1)
+                    if touch.is_double_tap:
+                        self.on_double_tap()
+                        self.f_text = child.only_text
+                        self.full_text_pop_up()
                     return True  # Label was touched, consume the event
 
         return super().on_touch_down(touch)
     
-    
+    def task_details_pop_up(self):
+        self.ft = T_info()
+        for child in self.table_layout.children:
+            if isinstance(child, Label) and self.f_text is not None:
+                popupWindow = Popup(title="Full text task", content = Label(text=self.f_text), size_hint = (None, None), size=(400,400))
+                popupWindow.open()
+
+    def on_double_tap(self):
+            return True
     def add_task(self):  # take input field text, make widget with text and date
 
         task_str = str(self.task.text)
@@ -95,7 +109,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.chosen = False
             task_label.is_finished = False
             task_label.color = self.text_color
-
+            task_label.late_days = 0
+            task_label.only_text = task_str
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
 
@@ -222,7 +237,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     late_days += 1
                     child.color = (1,0,0,1)
                 else:
-                    late_tasks = False
+                    late_tasks = False    
         if late_tasks is False:
             self.bad_points = 0
 
@@ -257,7 +272,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                                     t_date = child.due_date,
                                     t_chosen = child.chosen,
                                     bad_points = self.bad_points,
-                                    t_finished = child.is_finished)
+                                    t_finished = child.is_finished,
+                                    t_late_days = child.late_days)
                             ]
 
                     session.add_all(task)
@@ -284,11 +300,13 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label = Label(text=f"{task.t_text}", font_size = "15sp",
                             pos_hint={'x': task.t_position_x, 'y': task.t_position_y},
                             size_hint=(None, None), size=(170, 50))
+            
             task_label.due_date = task.t_date
             task_label.chosen = task.t_chosen
             task_label.is_finished = task.t_finished
-            task_label.color = (1,1,1,1) if task_label.chosen is True else (0,0,0,1)
-            
+            task_label.color = (1, 1, 1, 1) if task_label.chosen else (1, 0, 0, 1) if task_label.late_days >= 1 else (0, 0, 0, 1)
+            task_label.late_days = task.t_late_days
+
             with task_label.canvas.before:
                 Color(0, 1, 0, 0.5, mode='rgba')
                 task_label.bg_color = Color(0, 1, 0, 0.5, mode='rgba')
