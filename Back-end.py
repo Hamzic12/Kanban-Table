@@ -32,9 +32,9 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     finished = NumericProperty(0)
     disabled_add = BooleanProperty(False)
     bad_points = NumericProperty(0) # for every delayed task plus bad points every day => worse punishment
-
+    t_full_text = None
     text_color = ListProperty((0,0,0,1))
-    t_properties = ""
+    
     p = P_edit()
     punishments = Consequences()
 
@@ -72,27 +72,36 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                                 other_child.color = (0,0,0,1) 
                         child.chosen = True
                         child.color = (1,1,1,1)
-                    if touch.is_double_tap:
-                        self.on_double_tap()
-                        self.f_text = child.only_text
-                        self.full_text_pop_up()
+                        return True
+                    
+                if child.collide_point(x, y) and touch.is_double_tap:
+                    self.t_full_text = child.only_text
+                    self.on_double_tap()
                     return True  # Label was touched, consume the event
 
         return super().on_touch_down(touch)
     
     def task_details_pop_up(self):
-        self.ft = T_info()
         for child in self.table_layout.children:
-            if isinstance(child, Label) and self.f_text is not None:
-                popupWindow = Popup(title="Full text task", content = Label(text=self.f_text), size_hint = (None, None), size=(400,400))
+            if isinstance(child, Label) and self.t_full_text is not None:
+                popupWindow = Popup(title="Task details", content = Label(text=self.t_full_text), size_hint = (None, None), size=(400,400))
                 popupWindow.open()
 
     def on_double_tap(self):
-            return True
+            self.task_details_pop_up()
+
     def add_task(self):  # take input field text, make widget with text and date
 
         task_str = str(self.task.text)
+        shown_string = ""
         
+        if len(task_str) > 18:
+            t_l = list(task_str)
+            for i in range(18):
+                shown_string += t_l[i]
+        else:
+            shown_string = task_str
+
         if self.days.text != "": # fixed when clicking add and days input field is empty stops the app
             days_int = int(self.days.text)
             days_to_date = datetime.date.today() + datetime.timedelta(days=days_int)
@@ -101,7 +110,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
         y_pos = 0.905 - 0.098 * self.task_count  # Vertical position, spaced out per task
 
         if self.task.text != "" and self.days.text != "":
-            task_label = Label(text=f"{task_str}\n{days_to_date}", font_size = "15sp",
+            task_label = Label(text=f"{shown_string}\n{days_to_date}", font_size = "15sp",
                             pos_hint={'x': x_pos, 'y': y_pos},
                             size_hint=(None, None), size=(170, 50))
             
@@ -111,6 +120,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.color = self.text_color
             task_label.late_days = 0
             task_label.only_text = task_str
+
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
 
