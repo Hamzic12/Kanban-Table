@@ -62,6 +62,9 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             if isinstance(child, Label):
                 x, y = self.table_layout.to_widget(*touch.pos)
                 if child.collide_point(x, y):
+                    if touch.is_double_tap:
+                        self.t_full_text = child.only_text
+                        self.task_details_pop_up(child)
                     if child.chosen is True:
                         child.chosen = False # If the label is already chosen, unselect it
                         child.color = (1,0,0,1) if child.due_date < datetime.date.today() else (0,0,0,1)
@@ -69,26 +72,19 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                         for other_child in self.table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
-                                other_child.color = (0,0,0,1) 
+                                other_child.color = (1,0,0,1) if child.due_date < datetime.date.today() else (0,0,0,1)
                         child.chosen = True
                         child.color = (1,1,1,1)
-                        return True
-                    
-                if child.collide_point(x, y) and touch.is_double_tap:
-                    self.t_full_text = child.only_text
-                    self.on_double_tap()
-                    return True  # Label was touched, consume the event
+                
+                
 
         return super().on_touch_down(touch)
     
-    def task_details_pop_up(self):
-        for child in self.table_layout.children:
-            if isinstance(child, Label) and self.t_full_text is not None:
-                popupWindow = Popup(title="Task details", content = Label(text=self.t_full_text), size_hint = (None, None), size=(400,400))
+    def task_details_pop_up(self, child):
+        if child and self.t_full_text is not None:
+                popupWindow = Popup(title="Task details", content = Label(text=f"{self.t_full_text}\nIt is {child.late_days} days late"), size_hint = (None, None), size=(400,400))
                 popupWindow.open()
 
-    def on_double_tap(self):
-            self.task_details_pop_up()
 
     def add_task(self):  # take input field text, make widget with text and date
 
@@ -120,6 +116,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.color = self.text_color
             task_label.late_days = 0
             task_label.only_text = task_str
+            task_label.pop_up = False
 
             # create background for label of tasks and before so the rectangle is under the text
             with task_label.canvas.before:
