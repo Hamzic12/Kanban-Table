@@ -219,9 +219,6 @@
                     hint_text: "Enter the task"
                     multiline: False
                     size_hint: 1, 0.1
-                    on_text:
-                        if len(self.text.strip()) >= 18: self.readonly = True
-                        else: self.readonly = False # Now only 6 ints are allowed
                 Label:
                     text: str(f"Punishment points: {root.bad_points}")
                     font_size: self.width * 0.1
