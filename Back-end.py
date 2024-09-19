@@ -72,7 +72,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                         for other_child in self.table_layout.children:
                             if isinstance(other_child, Label):
                                 other_child.chosen = False  # Deselects everyone else
-                                other_child.color = (1,0,0,1) if child.due_date < datetime.date.today() else (0,0,0,1)
+                                other_child.color = (1,0,0,1) if other_child.due_date < datetime.date.today() else (0,0,0,1)
                         child.chosen = True
                         child.color = (1,1,1,1)
                 
@@ -241,7 +241,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                 if child.due_date < datetime.date.today(): # checks if today is later than date of task
                     self.bad_points += 1 # for every late task is a + for bad points for punishment
                     late_tasks = True
-                    late_days += 1
+                    child.late_days += 1
                     child.color = (1,0,0,1)
                 else:
                     late_tasks = False    
@@ -311,8 +311,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.due_date = task.t_date
             task_label.chosen = task.t_chosen
             task_label.is_finished = task.t_finished
-            task_label.color = (1, 1, 1, 1) if task_label.chosen else (1, 0, 0, 1) if task_label.late_days >= 1 else (0, 0, 0, 1)
             task_label.late_days = task.t_late_days
+            task_label.color = (1, 1, 1, 1) if task_label.chosen else (1, 0, 0, 1) if task_label.late_days >= 1 else (0, 0, 0, 1)
 
             with task_label.canvas.before:
                 Color(0, 1, 0, 0.5, mode='rgba')
