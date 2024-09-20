@@ -263,7 +263,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
     def schedule_checker(self):
         while True:
             schedule.run_pending()
-            time.sleep(59)
+            time.sleep(59) # So it only runs once per 59 second
 
 
     def save_progress(self):
@@ -280,7 +280,8 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                                     t_chosen = child.chosen,
                                     bad_points = self.bad_points,
                                     t_finished = child.is_finished,
-                                    t_late_days = child.late_days)
+                                    t_late_days = child.late_days,
+                                    t_only_text = child.only_text)
                             ]
 
                     session.add_all(task)
@@ -313,6 +314,7 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
             task_label.is_finished = task.t_finished
             task_label.late_days = task.t_late_days
             task_label.color = (1, 1, 1, 1) if task_label.chosen else (1, 0, 0, 1) if task_label.late_days >= 1 else (0, 0, 0, 1)
+            task_label.only_text = task.t_only_text
 
             with task_label.canvas.before:
                 Color(0, 1, 0, 0.5, mode='rgba')
