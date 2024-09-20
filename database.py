@@ -16,6 +16,8 @@ class User_Tasks(Base):
     t_chosen = Column("Task is clicked", Boolean)
     bad_points = Column("Bad points", Integer)
     t_finished = Column("Task is done", Boolean)
+    t_late_days = Column("Late days of task", Integer)
+    t_only_text = Column("Task's text only", String)
 
 
 Base.metadata.create_all(engine) # for creating the table
