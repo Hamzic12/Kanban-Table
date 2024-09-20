@@ -31,3 +31,5 @@ pip install schedule
     2. Every 6 seconds a there will be a pop up, which will annoy and motivate the user
     3. A video pops up and tells the user that "Actions have consequences" and afterwards will bring pain to the users ears
     4. 4 Websites will be blocked, which are facebook, instagram, youtube, google and reddit
+- Allows the user to make however long task name and only first 18 letters will be shown
+- When the user double clicks the full text will be written and how many days late the task is in a pop up
