@@ -6,7 +6,7 @@ class Consequences:
         webbrowser.open('https://youtu.be/TC-o_YRgBp4')
 
     def annoying_popup(self):
-        for _ in range(15):
+        for _ in range(20):
             ctypes.windll.user32.MessageBoxW(0, "Focus on your tasks!!!!", "Reminder", 0x40 | 0x1)
             time.sleep(6)  
     
@@ -22,6 +22,7 @@ class Consequences:
         hosts = r"C:\Windows\System32\drivers\etc\hosts"
         redirect = "127.0.0.1"
         websites = ["www.facebook.com", "www.instagram.com", "www.reddit.com", "www.youtube.com", "www.google.com"]
+
         with open(hosts, 'r+') as file:
             f_content = file.read()
             for site in websites:
@@ -29,5 +30,6 @@ class Consequences:
                     pass
                 else:
                     file.write(redirect + " " + site + "\n")
-        ctypes.windll.user32.MessageBoxW(0, "Enjoy blocked websites", "Reminder", 0x40 | 0x1)
+
+        ctypes.windll.user32.MessageBoxW(0, "Enjoy browsing through blocked websites", "Reminder", 0x40 | 0x1)
     
