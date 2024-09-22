@@ -28,7 +28,7 @@ pip install schedule
 - Allows the user to save the progress and task data into a in-memory database and afterwards load them back up
 - In case of a red text, it indicates a late tasks, and there are 4 stages of punishments:
     1. A video pops up everyday and motivates the user to finish the tasks in case the user still has punishment points 
-    2. Every 6 seconds a there will be a pop up, which will annoy and motivate the user
+    2. Every 6 seconds a there will be a pop up, which will annoy and motivate the user twenty times
     3. A video pops up and tells the user that "Actions have consequences" and afterwards will bring pain to the users ears
     4. 4 Websites will be blocked, which are facebook, instagram, youtube, google and reddit
 - Allows the user to make however long task name and only first 18 letters will be shown
