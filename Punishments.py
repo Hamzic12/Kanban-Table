@@ -18,10 +18,10 @@ class Consequences:
             winsound.Beep(10000, 5000)  # 10000 Hz sound for 5 s
             time.sleep(4)
 
-    def block_websites(self):
+    def block_websites(self): # it has to be run as administrator in order to work
         hosts = r"C:\Windows\System32\drivers\etc\hosts"
         redirect = "127.0.0.1"
-        websites = ["www.facebook.com", "www.instagram.com", "www.reddit.com", "www.youtube.com", "www.google.com"]
+        websites = ["www.facebook.com", "www.instagram.com", "www.reddit.com", "www.youtube.com", "www.google.com", "www.x.com"]
 
         with open(hosts, 'r+') as file:
             f_content = file.read()
