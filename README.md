@@ -21,20 +21,20 @@ pip install schedule
 ## Features
 
 - Lets the user move/remove/edit task, that user chooses, text color will be white to indicate being chosen
-![Screenshot](Screenshots/ss1.JPG.png)
+![Screenshot](Screenshots/ss1.JPG)
 
 - Here is an example of editing a chosen task
-![Screenshot](Screenshots/ss3.JPG.png)
+![Screenshot](Screenshots/ss3.JPG)
 
 - User can either remove one task or clear the whole table and start over
 - Above the text inputs are counters for number of tasks, number of finished tasks and number of punishment points
 - There is a progress bar that shows how is the user doing
     - It is a dynamic bar, which changes sizes as the tasks grow in number
 - Here is a half fullbar with 2 tasks 
-![Screenshot](Screenshots/ss2.JPG.png)
+![Screenshot](Screenshots/ss2.JPG)
 
 - Here 2/3 full with three tasks
-![Screenshot](Screenshots/ss4.JPG.png)
+![Screenshot](Screenshots/ss4.JPG)
 
 - Allows the user to save the progress and task data into a in-memory database and afterwards load them back up
 - In case of a red text, it indicates a late tasks, and there are 4 stages of punishments:
@@ -44,4 +44,4 @@ pip install schedule
     4. 4 Websites will be blocked, which are facebook, instagram, youtube, google and reddit
 - Allows the user to make however long task name and only first 18 letters will be shown
 - When the user double clicks a pop up appears, where the task label full text will be written and how many days late the task is
-![Screenshot](Screenshots/ss5.JPG.png)
+![Screenshot](Screenshots/ss5.JPG)
