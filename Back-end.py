@@ -287,12 +287,6 @@ class App_layout(Widget): # create grid layout of 1 grid layout 1 relative 1 gri
                     session.add_all(task)
                 
             session.commit()
-
-            saved_tasks = session.query(User_Tasks).all()
-
-            for task in saved_tasks: # shows all data from database
-                print(f"Task: {task.t_text}, Position X: {task.t_position_x}, Position Y: {task.t_position_y}, "
-                f"Date: {task.t_date}, Chosen: {task.t_chosen}, Bad Points: {task.bad_points}, Finished: {task.t_finished}")
             
             
     def load_progress(self):
