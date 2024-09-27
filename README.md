@@ -30,10 +30,11 @@ pip install schedule
 - Above the text inputs are counters for number of tasks, number of finished tasks and number of punishment points
 - There is a progress bar that shows how is the user doing
     - It is a dynamic bar, which changes sizes as the tasks grow in number
+
 - Here is a half fullbar with 2 tasks 
 ![Screenshot](Screenshots/ss2.JPG)
 
-- Here 2/3 full with three tasks
+- Here 2/3 full bar with three tasks
 ![Screenshot](Screenshots/ss4.JPG)
 
 - Allows the user to save the progress and task data into a in-memory database and afterwards load them back up
